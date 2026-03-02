@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Mode Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        .dark .glow {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+    
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-700 dark:to-purple-800 text-white p-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold">🧮 Smart Calculator</h1>
+            <button id="themeToggle" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-md hover:shadow-xl transition-all">
+                <span class="dark:hidden">🌙 Dark</span>
+                <span class="hidden dark:inline">☀️ Light</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mode Selection Buttons -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="flex justify-center gap-4 flex-wrap">
+            <button onclick="switchMode('basic')" class="mode-btn bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                📚 5th Class
+            </button>
+            <button onclick="switchMode('scientific')" class="mode-btn bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🔬 10th Class
+            </button>
+            <button onclick="switchMode('advanced')" class="mode-btn bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🎓 16th Class
+            </button>
+        </div>
+    </div>
+
+    <!-- Calculator Container -->
+    <div class="container mx-auto mt-8 px-4 pb-12">
+        
+        <!-- 5th Class - Basic Calculator -->
+        <div id="basicCalculator" class="calculator-mode hidden">
+            <div class="max-w-md mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                <div class="mb-4">
+                    <input type="text" id="basicDisplay" readonly class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-right text-3xl p-4 rounded-lg shadow-inner font-mono" value="0">
+                </div>
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="clearDisplay()" class="btn-calc bg-red-500 hover:bg-red-600 text-white col-span-2">C</button>
+                    <button onclick="backspace()" class="btn-calc bg-orange-500 hover:bg-orange-600 text-white">⌫</button>
+                    <button onclick="appendToDisplay('/')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">÷</button>
+                    
+                    <button onclick="appendToDisplay('7')" class="btn-calc">7</button>
+                    <button onclick="appendToDisplay('8')" class="btn-calc">8</button>
+                    <button onclick="appendToDisplay('9')" class="btn-calc">9</button>
+                    <button onclick="appendToDisplay('*')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">×</button>
+                    
+                    <button onclick="appendToDisplay('4')" class="btn-calc">4</button>
+                    <button onclick="appendToDisplay('5')" class="btn-calc">5</button>
+                    <button onclick="appendToDisplay('6')" class="btn-calc">6</button>
+                    <button onclick="appendToDisplay('-')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">−</button>
+                    
+                    <button onclick="appendToDisplay('1')" class="btn-calc">1</button>
+                    <button onclick="appendToDisplay('2')" class="btn-calc">2</button>
+                    <button onclick="appendToDisplay('3')" class="btn-calc">3</button>
+                    <button onclick="appendToDisplay('+')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">+</button>
+                    
+                    <button onclick="appendToDisplay('0')" class="btn-calc col-span-2">0</button>
+                    <button onclick="appendToDisplay('.')" class="btn-calc">.</button>
+                    <button onclick="calculate()" class="btn-calc bg-green-500 hover:bg-green-600 text-white">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10th Class - Scientific Calculator -->
+        <div id="scientificCalculator" class="calculator-mode hidden">
+            <div class="max-w-2xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                <div class="mb-4">
+                    <input type="text" id="scientificDisplay" readonly class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-right text-3xl p-4 rounded-lg shadow-inner font-mono" value="0">
+                </div>
+                
+                <!-- Scientific Functions -->
+                <div class="grid grid-cols-5 gap-2 mb-3">
+                    <button onclick="scientificFunc('sin')" class="btn-sci">sin</button>
+                    <button onclick="scientificFunc('cos')" class="btn-sci">cos</button>
+                    <button onclick="scientificFunc('tan')" class="btn-sci">tan</button>
+                    <button onclick="scientificFunc('log')" class="btn-sci">log</button>
+                    <button onclick="scientificFunc('sqrt')" class="btn-sci">√</button>
+                    
+                    <button onclick="appendToDisplay('(')" class="btn-sci">(</button>
+                    <button onclick="appendToDisplay(')')" class="btn-sci">)</button>
+                    <button onclick="scientificFunc('square')" class="btn-sci">x²</button>
+                    <button onclick="scientificFunc('power')" class="btn-sci">xʸ</button>
+                    <button onclick="appendToDisplay('%')" class="btn-sci">%</button>
+                </div>
+                
+                <!-- Basic Buttons -->
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="clearDisplay()" class="btn-calc bg-red-500 hover:bg-red-600 text-white col-span-2">C</button>
+                    <button onclick="backspace()" class="btn-calc bg-orange-500 hover:bg-orange-600 text-white">⌫</button>
+                    <button onclick="appendToDisplay('/')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">÷</button>
+                    
+                    <button onclick="appendToDisplay('7')" class="btn-calc">7</button>
+                    <button onclick="appendToDisplay('8')" class="btn-calc">8</button>
+                    <button onclick="appendToDisplay('9')" class="btn-calc">9</button>
+                    <button onclick="appendToDisplay('*')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">×</button>
+                    
+                    <button onclick="appendToDisplay('4')" class="btn-calc">4</button>
+                    <button onclick="appendToDisplay('5')" class="btn-calc">5</button>
+                    <button onclick="appendToDisplay('6')" class="btn-calc">6</button>
+                    <button onclick="appendToDisplay('-')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">−</button>
+                    
+                    <button onclick="appendToDisplay('1')" class="btn-calc">1</button>
+                    <button onclick="appendToDisplay('2')" class="btn-calc">2</button>
+                    <button onclick="appendToDisplay('3')" class="btn-calc">3</button>
+                    <button onclick="appendToDisplay('+')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">+</button>
+                    
+                    <button onclick="appendToDisplay('0')" class="btn-calc col-span-2">0</button>
+                    <button onclick="appendToDisplay('.')" class="btn-calc">.</button>
+                    <button onclick="calculate()" class="btn-calc bg-green-500 hover:bg-green-600 text-white">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 16th Class - Advanced Calculator -->
+        <div id="advancedCalculator" class="calculator-mode hidden">
+            <div class="max-w-4xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Tabs -->
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="switchAdvancedTab('quadratic')" class="adv-tab bg-purple-500 text-white px-6 py-2 rounded-lg">Quadratic Solver</button>
+                    <button onclick="switchAdvancedTab('matrix')" class="adv-tab bg-purple-500 text-white px-6 py-2 rounded-lg">Matrix Calculator</button>
+                    <button onclick="switchAdvancedTab('gpa')" class="adv-tab bg-purple-500 text-white px-6 py-2 rounded-lg">GPA Calculator</button>
+                </div>
+
+                <!-- Quadratic Solver -->
+                <div id="quadraticTab" class="adv-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Quadratic Equation Solver (ax² + bx + c = 0)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <input type="number" id="coeffA" placeholder="a" class="input-field">
+                        <input type="number" id="coeffB" placeholder="b" class="input-field">
+                        <input type="number" id="coeffC" placeholder="c" class="input-field">
+                    </div>
+                    <button onclick="solveQuadratic()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold">Solve</button>
+                    <div id="quadraticResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white"></div>
+                </div>
+
+                <!-- Matrix Calculator -->
+                <div id="matrixTab" class="adv-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">2×2 Matrix Addition</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2">Matrix A:</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="a11" placeholder="a11" class="input-field">
+                                <input type="number" id="a12" placeholder="a12" class="input-field">
+                                <input type="number" id="a21" placeholder="a21" class="input-field">
+                                <input type="number" id="a22" placeholder="a22" class="input-field">
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2">Matrix B:</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="b11" placeholder="b11" class="input-field">
+                                <input type="number" id="b12" placeholder="b12" class="input-field">
+                                <input type="number" id="b21" placeholder="b21" class="input-field">
+                                <input type="number" id="b22" placeholder="b22" class="input-field">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="addMatrices()" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold">Add Matrices</button>
+                    <div id="matrixResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white"></div>
+                </div>
+
+                <!-- GPA Calculator -->
+                <div id="gpaTab" class="adv-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">GPA Calculator</h3>
+                    <div id="courseContainer"></div>
+                    <button onclick="addCourse()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">+ Add Course</button>
+                    <button onclick="calculateGPA()" class="mt-4 ml-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">Calculate GPA</button>
+                    <div id="gpaResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
