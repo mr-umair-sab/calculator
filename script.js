@@ -3,6 +3,7 @@ let currentMode = 'basic';
 let currentDisplay = '';
 let powerMode = false;
 let courseCount = 0;
+let angleMode = 'DEG'; // DEG or RAD
 
 // Theme Toggle
 document.getElementById('themeToggle').addEventListener('click', () => {
@@ -25,6 +26,9 @@ function switchMode(mode) {
     } else if (mode === 'scientific') {
         document.getElementById('scientificCalculator').classList.remove('hidden');
         currentDisplay = document.getElementById('scientificDisplay');
+    } else if (mode === 'intermediate') {
+        document.getElementById('intermediateCalculator').classList.remove('hidden');
+        currentDisplay = document.getElementById('intermediateDisplay');
     } else if (mode === 'advanced') {
         document.getElementById('advancedCalculator').classList.remove('hidden');
         switchAdvancedTab('quadratic');
@@ -72,6 +76,9 @@ function calculate() {
         // Handle percentage
         expression = expression.replace(/(\d+)%/g, '($1/100)');
         
+        // Handle power operator (^)
+        expression = expression.replace(/(\d+\.?\d*)\^(\d+\.?\d*)/g, 'Math.pow($1,$2)');
+        
         let result = eval(expression);
         currentDisplay.value = result;
     } catch (error) {
@@ -112,6 +119,98 @@ function scientificFunc(func) {
         }
         
         currentDisplay.value = result.toFixed(8).replace(/\.?0+$/, '');
+    } catch (error) {
+        currentDisplay.value = 'Error';
+    }
+}
+
+// ===== 12th CLASS INTERMEDIATE FUNCTIONS =====
+
+function toggleAngleMode() {
+    angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+    document.getElementById('angleMode').textContent = angleMode;
+}
+
+function factorial(n) {
+    if (n < 0) return NaN;
+    if (n === 0 || n === 1) return 1;
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+function intermediateFunc(func) {
+    try {
+        let value = parseFloat(currentDisplay.value);
+        let result;
+        
+        // Convert to radians if in DEG mode for trig functions
+        const toRadians = (deg) => deg * Math.PI / 180;
+        const toDegrees = (rad) => rad * 180 / Math.PI;
+        
+        switch(func) {
+            case 'sin':
+                result = angleMode === 'DEG' ? Math.sin(toRadians(value)) : Math.sin(value);
+                break;
+            case 'cos':
+                result = angleMode === 'DEG' ? Math.cos(toRadians(value)) : Math.cos(value);
+                break;
+            case 'tan':
+                result = angleMode === 'DEG' ? Math.tan(toRadians(value)) : Math.tan(value);
+                break;
+            case 'asin':
+                result = Math.asin(value);
+                result = angleMode === 'DEG' ? toDegrees(result) : result;
+                break;
+            case 'acos':
+                result = Math.acos(value);
+                result = angleMode === 'DEG' ? toDegrees(result) : result;
+                break;
+            case 'atan':
+                result = Math.atan(value);
+                result = angleMode === 'DEG' ? toDegrees(result) : result;
+                break;
+            case 'log':
+                result = Math.log10(value);
+                break;
+            case 'ln':
+                result = Math.log(value);
+                break;
+            case 'exp':
+                result = Math.exp(value);
+                break;
+            case 'sqrt':
+                result = Math.sqrt(value);
+                break;
+            case 'square':
+                result = Math.pow(value, 2);
+                break;
+            case 'cube':
+                result = Math.pow(value, 3);
+                break;
+            case 'factorial':
+                if (value < 0 || !Number.isInteger(value)) {
+                    currentDisplay.value = 'Error: n must be positive integer';
+                    return;
+                }
+                result = factorial(value);
+                break;
+            case 'abs':
+                result = Math.abs(value);
+                break;
+            case 'power':
+                appendToDisplay('^');
+                return;
+        }
+        
+        // Format result
+        if (isNaN(result) || !isFinite(result)) {
+            currentDisplay.value = 'Error';
+        } else {
+            currentDisplay.value = result.toFixed(10).replace(/\.?0+$/, '');
+        }
     } catch (error) {
         currentDisplay.value = 'Error';
     }
@@ -266,6 +365,9 @@ style.textContent = `
     }
     .btn-sci {
         @apply bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg shadow-md transition-all font-semibold;
+    }
+    .btn-inter {
+        @apply bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-2 rounded-lg shadow-md transition-all font-semibold text-sm;
     }
     .input-field {
         @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg shadow-inner border border-gray-300 dark:border-gray-600;

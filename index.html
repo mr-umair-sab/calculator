@@ -41,6 +41,9 @@
             <button onclick="switchMode('scientific')" class="mode-btn bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
                 🔬 10th Class
             </button>
+            <button onclick="switchMode('intermediate')" class="mode-btn bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🧪 12th Class
+            </button>
             <button onclick="switchMode('advanced')" class="mode-btn bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
                 🎓 16th Class
             </button>
@@ -103,6 +106,77 @@
                     <button onclick="scientificFunc('square')" class="btn-sci">x²</button>
                     <button onclick="scientificFunc('power')" class="btn-sci">xʸ</button>
                     <button onclick="appendToDisplay('%')" class="btn-sci">%</button>
+                </div>
+                
+                <!-- Basic Buttons -->
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="clearDisplay()" class="btn-calc bg-red-500 hover:bg-red-600 text-white col-span-2">C</button>
+                    <button onclick="backspace()" class="btn-calc bg-orange-500 hover:bg-orange-600 text-white">⌫</button>
+                    <button onclick="appendToDisplay('/')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">÷</button>
+                    
+                    <button onclick="appendToDisplay('7')" class="btn-calc">7</button>
+                    <button onclick="appendToDisplay('8')" class="btn-calc">8</button>
+                    <button onclick="appendToDisplay('9')" class="btn-calc">9</button>
+                    <button onclick="appendToDisplay('*')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">×</button>
+                    
+                    <button onclick="appendToDisplay('4')" class="btn-calc">4</button>
+                    <button onclick="appendToDisplay('5')" class="btn-calc">5</button>
+                    <button onclick="appendToDisplay('6')" class="btn-calc">6</button>
+                    <button onclick="appendToDisplay('-')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">−</button>
+                    
+                    <button onclick="appendToDisplay('1')" class="btn-calc">1</button>
+                    <button onclick="appendToDisplay('2')" class="btn-calc">2</button>
+                    <button onclick="appendToDisplay('3')" class="btn-calc">3</button>
+                    <button onclick="appendToDisplay('+')" class="btn-calc bg-blue-500 hover:bg-blue-600 text-white">+</button>
+                    
+                    <button onclick="appendToDisplay('0')" class="btn-calc col-span-2">0</button>
+                    <button onclick="appendToDisplay('.')" class="btn-calc">.</button>
+                    <button onclick="calculate()" class="btn-calc bg-green-500 hover:bg-green-600 text-white">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12th Class - Intermediate Scientific Calculator -->
+        <div id="intermediateCalculator" class="calculator-mode hidden">
+            <div class="max-w-2xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Display -->
+                <div class="mb-4">
+                    <input type="text" id="intermediateDisplay" readonly class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-right text-3xl p-4 rounded-lg shadow-inner font-mono" value="0">
+                </div>
+                
+                <!-- Degree/Radian Toggle -->
+                <div class="mb-4 flex justify-center">
+                    <button id="angleToggle" onclick="toggleAngleMode()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg">
+                        Mode: <span id="angleMode">DEG</span>
+                    </button>
+                </div>
+                
+                <!-- Advanced Scientific Functions -->
+                <div class="grid grid-cols-5 gap-2 mb-3">
+                    <button onclick="intermediateFunc('sin')" class="btn-inter">sin</button>
+                    <button onclick="intermediateFunc('cos')" class="btn-inter">cos</button>
+                    <button onclick="intermediateFunc('tan')" class="btn-inter">tan</button>
+                    <button onclick="intermediateFunc('asin')" class="btn-inter">sin⁻¹</button>
+                    <button onclick="intermediateFunc('acos')" class="btn-inter">cos⁻¹</button>
+                    
+                    <button onclick="intermediateFunc('atan')" class="btn-inter">tan⁻¹</button>
+                    <button onclick="intermediateFunc('log')" class="btn-inter">log</button>
+                    <button onclick="intermediateFunc('ln')" class="btn-inter">ln</button>
+                    <button onclick="intermediateFunc('exp')" class="btn-inter">eˣ</button>
+                    <button onclick="intermediateFunc('sqrt')" class="btn-inter">√</button>
+                    
+                    <button onclick="intermediateFunc('factorial')" class="btn-inter">n!</button>
+                    <button onclick="intermediateFunc('abs')" class="btn-inter">|x|</button>
+                    <button onclick="appendToDisplay('(')" class="btn-inter">(</button>
+                    <button onclick="appendToDisplay(')')" class="btn-inter">)</button>
+                    <button onclick="appendToDisplay('^')" class="btn-inter">xʸ</button>
+                    
+                    <button onclick="appendToDisplay('Math.PI')" class="btn-inter">π</button>
+                    <button onclick="appendToDisplay('Math.E')" class="btn-inter">e</button>
+                    <button onclick="intermediateFunc('square')" class="btn-inter">x²</button>
+                    <button onclick="intermediateFunc('cube')" class="btn-inter">x³</button>
+                    <button onclick="appendToDisplay('%')" class="btn-inter">%</button>
                 </div>
                 
                 <!-- Basic Buttons -->
