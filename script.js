@@ -319,9 +319,9 @@ function addCourse() {
     const courseDiv = document.createElement('div');
     courseDiv.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-3';
     courseDiv.innerHTML = `
-        <input type="text" placeholder="Course Name" class="input-field course-name">
-        <input type="number" step="0.1" min="0" max="4" placeholder="Grade (0-4)" class="input-field course-grade">
-        <input type="number" min="1" max="6" placeholder="Credits" class="input-field course-credits">
+        <input type="text" placeholder="Course Name" class="input-field course-name placeholder:text-gray-400 dark:placeholder:text-gray-500">
+        <input type="number" step="0.1" min="0" max="4" placeholder="Grade (0-4)" class="input-field course-grade placeholder:text-gray-400 dark:placeholder:text-gray-500">
+        <input type="number" min="1" max="6" placeholder="Credits" class="input-field course-credits placeholder:text-gray-400 dark:placeholder:text-gray-500">
     `;
     container.appendChild(courseDiv);
 }
@@ -370,7 +370,7 @@ style.textContent = `
         @apply bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-2 rounded-lg shadow-md transition-all font-semibold text-sm;
     }
     .input-field {
-        @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg shadow-inner border border-gray-300 dark:border-gray-600;
+        @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg shadow-inner border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:outline-none transition-all;
     }
 `;
 document.head.appendChild(style);

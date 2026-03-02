@@ -17,6 +17,33 @@
         .dark .glow {
             box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
         }
+        
+        /* Input field dark mode fix */
+        input[type="number"],
+        input[type="text"] {
+            background-color: white;
+            color: #1f2937;
+            border: 1px solid #d1d5db;
+        }
+        
+        .dark input[type="number"],
+        .dark input[type="text"] {
+            background-color: #374151 !important;
+            color: white !important;
+            border: 1px solid #4b5563 !important;
+        }
+        
+        .dark input[type="number"]::placeholder,
+        .dark input[type="text"]::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #a855f7;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
@@ -222,12 +249,12 @@
                 <div id="quadraticTab" class="adv-tab-content hidden">
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Quadratic Equation Solver (ax² + bx + c = 0)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <input type="number" id="coeffA" placeholder="a" class="input-field">
-                        <input type="number" id="coeffB" placeholder="b" class="input-field">
-                        <input type="number" id="coeffC" placeholder="c" class="input-field">
+                        <input type="number" id="coeffA" placeholder="a" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                        <input type="number" id="coeffB" placeholder="b" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                        <input type="number" id="coeffC" placeholder="c" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
                     </div>
-                    <button onclick="solveQuadratic()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold">Solve</button>
-                    <div id="quadraticResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white"></div>
+                    <button onclick="solveQuadratic()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Solve</button>
+                    <div id="quadraticResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                 </div>
 
                 <!-- Matrix Calculator -->
@@ -235,35 +262,35 @@
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">2×2 Matrix Addition</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p class="text-gray-700 dark:text-gray-300 mb-2">Matrix A:</p>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2 font-semibold">Matrix A:</p>
                             <div class="grid grid-cols-2 gap-2">
-                                <input type="number" id="a11" placeholder="a11" class="input-field">
-                                <input type="number" id="a12" placeholder="a12" class="input-field">
-                                <input type="number" id="a21" placeholder="a21" class="input-field">
-                                <input type="number" id="a22" placeholder="a22" class="input-field">
+                                <input type="number" id="a11" placeholder="a11" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="a12" placeholder="a12" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="a21" placeholder="a21" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="a22" placeholder="a22" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
                             </div>
                         </div>
                         <div>
-                            <p class="text-gray-700 dark:text-gray-300 mb-2">Matrix B:</p>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2 font-semibold">Matrix B:</p>
                             <div class="grid grid-cols-2 gap-2">
-                                <input type="number" id="b11" placeholder="b11" class="input-field">
-                                <input type="number" id="b12" placeholder="b12" class="input-field">
-                                <input type="number" id="b21" placeholder="b21" class="input-field">
-                                <input type="number" id="b22" placeholder="b22" class="input-field">
+                                <input type="number" id="b11" placeholder="b11" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="b12" placeholder="b12" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="b21" placeholder="b21" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="b22" placeholder="b22" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
                             </div>
                         </div>
                     </div>
-                    <button onclick="addMatrices()" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold">Add Matrices</button>
-                    <div id="matrixResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white"></div>
+                    <button onclick="addMatrices()" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Add Matrices</button>
+                    <div id="matrixResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                 </div>
 
                 <!-- GPA Calculator -->
                 <div id="gpaTab" class="adv-tab-content hidden">
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">GPA Calculator</h3>
                     <div id="courseContainer"></div>
-                    <button onclick="addCourse()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">+ Add Course</button>
-                    <button onclick="calculateGPA()" class="mt-4 ml-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">Calculate GPA</button>
-                    <div id="gpaResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white"></div>
+                    <button onclick="addCourse()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all font-semibold">+ Add Course</button>
+                    <button onclick="calculateGPA()" class="mt-4 ml-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all font-semibold">Calculate GPA</button>
+                    <div id="gpaResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                 </div>
 
             </div>
