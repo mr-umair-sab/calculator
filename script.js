@@ -4,11 +4,195 @@ let currentDisplay = '';
 let powerMode = false;
 let courseCount = 0;
 let angleMode = 'DEG'; // DEG or RAD
+let calculationHistory = [];
+let soundEnabled = false;
 
 // Theme Toggle
 document.getElementById('themeToggle').addEventListener('click', () => {
     document.documentElement.classList.toggle('dark');
 });
+
+// Keyboard Support
+document.addEventListener('keydown', (e) => {
+    if (!currentDisplay) return;
+    
+    // Number keys
+    if (e.key >= '0' && e.key <= '9') {
+        e.preventDefault();
+        appendToDisplay(e.key);
+        playSound();
+    }
+    // Operators
+    else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+        e.preventDefault();
+        appendToDisplay(e.key);
+        playSound();
+    }
+    // Decimal point
+    else if (e.key === '.') {
+        e.preventDefault();
+        appendToDisplay('.');
+        playSound();
+    }
+    // Enter key for calculate
+    else if (e.key === 'Enter') {
+        e.preventDefault();
+        calculate();
+        playSound();
+    }
+    // Backspace
+    else if (e.key === 'Backspace') {
+        e.preventDefault();
+        backspace();
+        playSound();
+    }
+    // Escape for clear
+    else if (e.key === 'Escape') {
+        e.preventDefault();
+        clearDisplay();
+        playSound();
+    }
+    // Parentheses
+    else if (e.key === '(' || e.key === ')') {
+        e.preventDefault();
+        appendToDisplay(e.key);
+        playSound();
+    }
+});
+
+// Sound Effect Function
+function playSound() {
+    if (!soundEnabled) return;
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+// Toggle Sound
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('soundToggle');
+    btn.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+    btn.className = soundEnabled 
+        ? 'bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-md transition-all'
+        : 'bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow-md transition-all';
+}
+
+// Save to History
+function saveToHistory(expression, result) {
+    const historyItem = {
+        expression: expression,
+        result: result,
+        timestamp: new Date().toLocaleString()
+    };
+    calculationHistory.unshift(historyItem);
+    
+    // Keep only last 50 calculations
+    if (calculationHistory.length > 50) {
+        calculationHistory.pop();
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('calcHistory', JSON.stringify(calculationHistory));
+    updateHistoryDisplay();
+}
+
+// Load History from localStorage
+function loadHistory() {
+    const saved = localStorage.getItem('calcHistory');
+    if (saved) {
+        calculationHistory = JSON.parse(saved);
+        updateHistoryDisplay();
+    }
+}
+
+// Update History Display
+function updateHistoryDisplay() {
+    const historyDiv = document.getElementById('historyList');
+    if (!historyDiv) return;
+    
+    if (calculationHistory.length === 0) {
+        historyDiv.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">No history yet</p>';
+        return;
+    }
+    
+    let html = '';
+    calculationHistory.forEach((item, index) => {
+        html += `
+            <div class="bg-white dark:bg-gray-700 p-3 rounded-lg mb-2 shadow hover:shadow-md transition-all cursor-pointer" onclick="loadFromHistory(${index})">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">${item.expression}</p>
+                        <p class="text-lg font-bold text-purple-600 dark:text-purple-400">= ${item.result}</p>
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteHistoryItem(${index})" class="text-red-500 hover:text-red-700 ml-2">✕</button>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">${item.timestamp}</p>
+            </div>
+        `;
+    });
+    historyDiv.innerHTML = html;
+}
+
+// Load calculation from history
+function loadFromHistory(index) {
+    if (currentDisplay) {
+        currentDisplay.value = calculationHistory[index].expression;
+    }
+}
+
+// Delete history item
+function deleteHistoryItem(index) {
+    calculationHistory.splice(index, 1);
+    localStorage.setItem('calcHistory', JSON.stringify(calculationHistory));
+    updateHistoryDisplay();
+}
+
+// Clear all history
+function clearHistory() {
+    if (confirm('Clear all history?')) {
+        calculationHistory = [];
+        localStorage.removeItem('calcHistory');
+        updateHistoryDisplay();
+    }
+}
+
+// Toggle History Panel
+function toggleHistory() {
+    const panel = document.getElementById('historyPanel');
+    panel.classList.toggle('hidden');
+}
+
+// Copy Result to Clipboard
+function copyResult() {
+    if (!currentDisplay || currentDisplay.value === '0' || currentDisplay.value === 'Error') {
+        return;
+    }
+    
+    navigator.clipboard.writeText(currentDisplay.value).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Copied!';
+        btn.className = 'bg-green-500 text-white px-4 py-2 rounded-lg shadow-md';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.className = 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition-all';
+        }, 1500);
+    });
+}
 
 // Mode Switching
 function switchMode(mode) {
@@ -32,14 +216,21 @@ function switchMode(mode) {
     } else if (mode === 'advanced') {
         document.getElementById('advancedCalculator').classList.remove('hidden');
         switchAdvancedTab('quadratic');
+    } else if (mode === 'utilities') {
+        document.getElementById('utilitiesCalculator').classList.remove('hidden');
+        switchUtilityTab('unit');
+        updateUnitOptions();
     }
     
-    clearDisplay();
+    if (currentDisplay) {
+        clearDisplay();
+    }
 }
 
 // Initialize with basic calculator
 window.onload = () => {
     switchMode('basic');
+    loadHistory();
 };
 
 // ===== BASIC & SCIENTIFIC CALCULATOR FUNCTIONS =====
@@ -50,6 +241,9 @@ function appendToDisplay(value) {
     } else {
         currentDisplay.value += value;
     }
+    // Add button animation
+    event.target?.classList.add('scale-95');
+    setTimeout(() => event.target?.classList.remove('scale-95'), 100);
 }
 
 function clearDisplay() {
@@ -70,6 +264,8 @@ function backspace() {
 function calculate() {
     try {
         let expression = currentDisplay.value;
+        const originalExpression = expression;
+        
         // Replace × and ÷ with * and /
         expression = expression.replace(/×/g, '*').replace(/÷/g, '/');
         
@@ -80,6 +276,14 @@ function calculate() {
         expression = expression.replace(/(\d+\.?\d*)\^(\d+\.?\d*)/g, 'Math.pow($1,$2)');
         
         let result = eval(expression);
+        
+        // Save to history
+        saveToHistory(originalExpression, result);
+        
+        // Animate result
+        currentDisplay.classList.add('scale-105');
+        setTimeout(() => currentDisplay.classList.remove('scale-105'), 200);
+        
         currentDisplay.value = result;
     } catch (error) {
         currentDisplay.value = 'Error';
@@ -374,3 +578,232 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+
+// ===== UTILITY CALCULATORS =====
+
+// Unit Converter
+function convertUnit() {
+    const value = parseFloat(document.getElementById('unitValue').value);
+    const fromUnit = document.getElementById('fromUnit').value;
+    const toUnit = document.getElementById('toUnit').value;
+    const category = document.getElementById('unitCategory').value;
+    const resultDiv = document.getElementById('unitResult');
+    
+    if (isNaN(value)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid number!</p>';
+        return;
+    }
+    
+    let result;
+    
+    if (category === 'length') {
+        const meters = convertToMeters(value, fromUnit);
+        result = convertFromMeters(meters, toUnit);
+    } else if (category === 'weight') {
+        const kg = convertToKg(value, fromUnit);
+        result = convertFromKg(kg, toUnit);
+    } else if (category === 'temperature') {
+        result = convertTemperature(value, fromUnit, toUnit);
+    }
+    
+    resultDiv.innerHTML = `<p class="text-2xl font-bold text-purple-600 dark:text-purple-400">${value} ${fromUnit} = ${result.toFixed(4)} ${toUnit}</p>`;
+}
+
+function convertToMeters(value, unit) {
+    const conversions = { m: 1, km: 1000, cm: 0.01, mm: 0.001, mile: 1609.34, yard: 0.9144, foot: 0.3048, inch: 0.0254 };
+    return value * conversions[unit];
+}
+
+function convertFromMeters(meters, unit) {
+    const conversions = { m: 1, km: 1000, cm: 0.01, mm: 0.001, mile: 1609.34, yard: 0.9144, foot: 0.3048, inch: 0.0254 };
+    return meters / conversions[unit];
+}
+
+function convertToKg(value, unit) {
+    const conversions = { kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592, oz: 0.0283495 };
+    return value * conversions[unit];
+}
+
+function convertFromKg(kg, unit) {
+    const conversions = { kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592, oz: 0.0283495 };
+    return kg / conversions[unit];
+}
+
+function convertTemperature(value, from, to) {
+    if (from === to) return value;
+    
+    // Convert to Celsius first
+    let celsius;
+    if (from === 'C') celsius = value;
+    else if (from === 'F') celsius = (value - 32) * 5/9;
+    else if (from === 'K') celsius = value - 273.15;
+    
+    // Convert from Celsius to target
+    if (to === 'C') return celsius;
+    else if (to === 'F') return celsius * 9/5 + 32;
+    else if (to === 'K') return celsius + 273.15;
+}
+
+function updateUnitOptions() {
+    const category = document.getElementById('unitCategory').value;
+    const fromUnit = document.getElementById('fromUnit');
+    const toUnit = document.getElementById('toUnit');
+    
+    let options = '';
+    if (category === 'length') {
+        options = '<option value="m">Meter</option><option value="km">Kilometer</option><option value="cm">Centimeter</option><option value="mm">Millimeter</option><option value="mile">Mile</option><option value="yard">Yard</option><option value="foot">Foot</option><option value="inch">Inch</option>';
+    } else if (category === 'weight') {
+        options = '<option value="kg">Kilogram</option><option value="g">Gram</option><option value="mg">Milligram</option><option value="lb">Pound</option><option value="oz">Ounce</option>';
+    } else if (category === 'temperature') {
+        options = '<option value="C">Celsius</option><option value="F">Fahrenheit</option><option value="K">Kelvin</option>';
+    }
+    
+    fromUnit.innerHTML = options;
+    toUnit.innerHTML = options;
+}
+
+// Percentage Calculator
+function calculatePercentage() {
+    const type = document.getElementById('percentType').value;
+    const num1 = parseFloat(document.getElementById('percentNum1').value);
+    const num2 = parseFloat(document.getElementById('percentNum2').value);
+    const resultDiv = document.getElementById('percentResult');
+    
+    if (isNaN(num1) || isNaN(num2)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid numbers!</p>';
+        return;
+    }
+    
+    let result, explanation;
+    
+    if (type === 'of') {
+        result = (num1 / 100) * num2;
+        explanation = `${num1}% of ${num2} = ${result.toFixed(2)}`;
+    } else if (type === 'is') {
+        result = (num1 / num2) * 100;
+        explanation = `${num1} is ${result.toFixed(2)}% of ${num2}`;
+    } else if (type === 'change') {
+        result = ((num2 - num1) / num1) * 100;
+        explanation = `Change from ${num1} to ${num2} = ${result.toFixed(2)}%`;
+    }
+    
+    resultDiv.innerHTML = `<p class="text-2xl font-bold text-purple-600 dark:text-purple-400">${explanation}</p>`;
+}
+
+// Age Calculator
+function calculateAge() {
+    const birthDate = new Date(document.getElementById('birthDate').value);
+    const resultDiv = document.getElementById('ageResult');
+    
+    if (!birthDate || isNaN(birthDate)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid date!</p>';
+        return;
+    }
+    
+    const today = new Date();
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+    
+    if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    }
+    
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+    
+    const totalDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+    const totalMonths = years * 12 + months;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-2">Your Age:</h4>
+        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-3">${years} Years, ${months} Months, ${days} Days</p>
+        <p class="text-gray-700 dark:text-gray-300">Total: ${totalMonths} months or ${totalDays} days</p>
+    `;
+}
+
+// BMI Calculator
+function calculateBMI() {
+    const weight = parseFloat(document.getElementById('bmiWeight').value);
+    const height = parseFloat(document.getElementById('bmiHeight').value) / 100; // Convert to meters
+    const resultDiv = document.getElementById('bmiResult');
+    
+    if (isNaN(weight) || isNaN(height) || height <= 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid values!</p>';
+        return;
+    }
+    
+    const bmi = weight / (height * height);
+    let category, color;
+    
+    if (bmi < 18.5) {
+        category = 'Underweight';
+        color = 'text-blue-600 dark:text-blue-400';
+    } else if (bmi < 25) {
+        category = 'Normal weight';
+        color = 'text-green-600 dark:text-green-400';
+    } else if (bmi < 30) {
+        category = 'Overweight';
+        color = 'text-orange-600 dark:text-orange-400';
+    } else {
+        category = 'Obese';
+        color = 'text-red-600 dark:text-red-400';
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-2">Your BMI:</h4>
+        <p class="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">${bmi.toFixed(1)}</p>
+        <p class="text-xl font-semibold ${color}">${category}</p>
+        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p>Underweight: < 18.5</p>
+            <p>Normal: 18.5 - 24.9</p>
+            <p>Overweight: 25 - 29.9</p>
+            <p>Obese: ≥ 30</p>
+        </div>
+    `;
+}
+
+// Currency Converter (using static rates - in real app, use API)
+function convertCurrency() {
+    const amount = parseFloat(document.getElementById('currencyAmount').value);
+    const from = document.getElementById('fromCurrency').value;
+    const to = document.getElementById('toCurrency').value;
+    const resultDiv = document.getElementById('currencyResult');
+    
+    if (isNaN(amount)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid amount!</p>';
+        return;
+    }
+    
+    // Static exchange rates (relative to USD)
+    const rates = {
+        USD: 1,
+        EUR: 0.92,
+        GBP: 0.79,
+        JPY: 149.50,
+        INR: 83.12,
+        PKR: 278.50,
+        AUD: 1.52,
+        CAD: 1.36
+    };
+    
+    const result = (amount / rates[from]) * rates[to];
+    
+    resultDiv.innerHTML = `
+        <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">${amount} ${from} = ${result.toFixed(2)} ${to}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Note: Using static exchange rates</p>
+    `;
+}
+
+// Switch Utility Tab
+function switchUtilityTab(tab) {
+    document.querySelectorAll('.utility-tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    document.getElementById(tab + 'Tab').classList.remove('hidden');
+}

@@ -15,7 +15,8 @@
         
         /* Input field dark mode fix with amazing animations */
         input[type="number"],
-        input[type="text"] {
+        input[type="text"],
+        input[type="date"] {
             background-color: white;
             color: #1f2937;
             border: 2px solid #d1d5db;
@@ -28,7 +29,8 @@
         }
         
         .dark input[type="number"],
-        .dark input[type="text"] {
+        .dark input[type="text"],
+        .dark input[type="date"] {
             background-color: #374151 !important;
             color: white !important;
             border: 2px solid #4b5563 !important;
@@ -47,7 +49,8 @@
         }
         
         input[type="number"]:focus,
-        input[type="text"]:focus {
+        input[type="text"]:focus,
+        input[type="date"]:focus {
             outline: none;
             border-color: #a855f7;
             box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2), 0 4px 12px rgba(168, 85, 247, 0.3);
@@ -55,21 +58,81 @@
         }
         
         .dark input[type="number"]:focus,
-        .dark input[type="text"]:focus {
+        .dark input[type="text"]:focus,
+        .dark input[type="date"]:focus {
             border-color: #c084fc !important;
             box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.3), 0 6px 16px rgba(168, 85, 247, 0.5) !important;
         }
         
         input[type="number"]:hover,
-        input[type="text"]:hover {
+        input[type="text"]:hover,
+        input[type="date"]:hover {
             border-color: #9333ea;
             box-shadow: 0 4px 8px rgba(147, 51, 234, 0.15);
         }
         
         .dark input[type="number"]:hover,
-        .dark input[type="text"]:hover {
+        .dark input[type="text"]:hover,
+        .dark input[type="date"]:hover {
             border-color: #a855f7 !important;
             box-shadow: 0 6px 12px rgba(168, 85, 247, 0.4) !important;
+        }
+        
+        /* Button animations */
+        button {
+            transition: all 0.2s ease;
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .scale-95 {
+            transform: scale(0.95);
+        }
+        
+        .scale-105 {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+        
+        /* History panel animation */
+        #historyPanel {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        /* Select dropdown styling */
+        select {
+            background-color: white;
+            color: #1f2937;
+            border: 2px solid #d1d5db;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dark select {
+            background-color: #374151 !important;
+            color: white !important;
+            border: 2px solid #4b5563 !important;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
         }
     </style>
 </head>
@@ -77,14 +140,39 @@
     
     <!-- Header -->
     <header class="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-700 dark:to-purple-800 text-white p-6 shadow-lg">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="container mx-auto flex justify-between items-center flex-wrap gap-3">
             <h1 class="text-3xl font-bold">🧮 Smart Calculator</h1>
-            <button id="themeToggle" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-md hover:shadow-xl transition-all">
-                <span class="dark:hidden">🌙 Dark</span>
-                <span class="hidden dark:inline">☀️ Light</span>
-            </button>
+            <div class="flex gap-2 flex-wrap">
+                <button id="copyBtn" onclick="copyResult()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"></button>
+                    📋 Copy Result
+                </button>
+                <button id="historyBtn" onclick="toggleHistory()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"></button>
+                    📜 History
+                </button>
+                <button id="soundToggle" onclick="toggleSound()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow-md transition-all">
+                    🔇 Sound Off
+                </button>
+                <button id="themeToggle" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-md hover:shadow-xl transition-all">
+                    <span class="dark:hidden">🌙 Dark</span>
+                    <span class="hidden dark:inline">☀️ Light</span>
+                </button>
+            </div>
         </div>
     </header>
+
+    <!-- History Panel -->
+    <div id="historyPanel" class="hidden fixed right-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto">
+        <div class="p-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white sticky top-0">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold">📜 History</h2>
+                <button onclick="toggleHistory()" class="text-2xl hover:bg-white/20 px-2 rounded">×</button>
+            </div>
+            <button onclick="clearHistory()" class="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded text-sm w-full">
+                Clear All
+            </button>
+        </div>
+        <div id="historyList" class="p-4"></div>
+    </div>
 
     <!-- Mode Selection Buttons -->
     <div class="container mx-auto mt-8 px-4">
@@ -100,6 +188,9 @@
             </button>
             <button onclick="switchMode('advanced')" class="mode-btn bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
                 🎓 16th Class
+            </button>
+            <button onclick="switchMode('utilities')" class="mode-btn bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🔧 Utilities
             </button>
         </div>
     </div>
@@ -318,6 +409,110 @@
                     <button onclick="addCourse()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all font-semibold">+ Add Course</button>
                     <button onclick="calculateGPA()" class="mt-4 ml-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all font-semibold">Calculate GPA</button>
                     <div id="gpaResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Utilities Calculator -->
+        <div id="utilitiesCalculator" class="calculator-mode hidden">
+            <div class="max-w-4xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Utility Tabs -->
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="switchUtilityTab('unit')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Unit Converter</button>
+                    <button onclick="switchUtilityTab('percentage')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Percentage</button>
+                    <button onclick="switchUtilityTab('age')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Age Calculator</button>
+                    <button onclick="switchUtilityTab('bmi')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">BMI Calculator</button>
+                    <button onclick="switchUtilityTab('currency')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Currency Converter</button>
+                </div>
+
+                <!-- Unit Converter -->
+                <div id="unitTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔄 Unit Converter</h3>
+                    <div class="space-y-4">
+                        <select id="unitCategory" onchange="updateUnitOptions()" class="input-field w-full">
+                            <option value="length">Length</option>
+                            <option value="weight">Weight</option>
+                            <option value="temperature">Temperature</option>
+                        </select>
+                        <input type="number" id="unitValue" placeholder="Enter value" class="input-field w-full">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="fromUnit" class="input-field"></select>
+                            <select id="toUnit" class="input-field"></select>
+                        </div>
+                        <button onclick="convertUnit()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
+                        <div id="unitResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Percentage Calculator -->
+                <div id="percentageTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📊 Percentage Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="percentType" class="input-field w-full">
+                            <option value="of">What is X% of Y?</option>
+                            <option value="is">X is what % of Y?</option>
+                            <option value="change">% change from X to Y</option>
+                        </select>
+                        <input type="number" id="percentNum1" placeholder="First number" class="input-field w-full">
+                        <input type="number" id="percentNum2" placeholder="Second number" class="input-field w-full">
+                        <button onclick="calculatePercentage()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="percentResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Age Calculator -->
+                <div id="ageTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🎂 Age Calculator</h3>
+                    <div class="space-y-4">
+                        <input type="date" id="birthDate" class="input-field w-full">
+                        <button onclick="calculateAge()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate Age</button>
+                        <div id="ageResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- BMI Calculator -->
+                <div id="bmiTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">⚖️ BMI Calculator</h3>
+                    <div class="space-y-4">
+                        <input type="number" id="bmiWeight" placeholder="Weight (kg)" class="input-field w-full">
+                        <input type="number" id="bmiHeight" placeholder="Height (cm)" class="input-field w-full">
+                        <button onclick="calculateBMI()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate BMI</button>
+                        <div id="bmiResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Currency Converter -->
+                <div id="currencyTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">💱 Currency Converter</h3>
+                    <div class="space-y-4">
+                        <input type="number" id="currencyAmount" placeholder="Amount" class="input-field w-full">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="fromCurrency" class="input-field">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="INR">INR</option>
+                                <option value="PKR">PKR</option>
+                                <option value="AUD">AUD</option>
+                                <option value="CAD">CAD</option>
+                            </select>
+                            <select id="toCurrency" class="input-field">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="INR">INR</option>
+                                <option value="PKR">PKR</option>
+                                <option value="AUD">AUD</option>
+                                <option value="CAD">CAD</option>
+                            </select>
+                        </div>
+                        <button onclick="convertCurrency()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
+                        <div id="currencyResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
                 </div>
 
             </div>
