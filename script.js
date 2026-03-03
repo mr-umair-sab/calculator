@@ -597,16 +597,130 @@ function calculateGPA() {
 const style = document.createElement('style');
 style.textContent = `
     .btn-calc {
-        @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white py-4 rounded-lg shadow-md hover:shadow-lg transition-all font-semibold text-xl;
+        background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+        color: #1f2937;
+        padding: 1rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
+    
+    .btn-calc:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    
+    .btn-calc:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .btn-calc {
+        background: linear-gradient(145deg, #4b5563, #374151);
+        color: #f9fafb;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .dark .btn-calc:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    
     .btn-sci {
-        @apply bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg shadow-md transition-all font-semibold;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: white;
+        padding: 0.625rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
+    
+    .btn-sci:hover {
+        background: linear-gradient(135deg, #4f46e5, #4338ca);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-sci:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+    }
+    
+    .dark .btn-sci {
+        background: linear-gradient(135deg, #818cf8, #6366f1);
+        box-shadow: 0 4px 6px rgba(129, 140, 248, 0.4);
+    }
+    
+    .dark .btn-sci:hover {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        box-shadow: 0 6px 12px rgba(129, 140, 248, 0.5);
+    }
+    
     .btn-inter {
-        @apply bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-2 rounded-lg shadow-md transition-all font-semibold text-sm;
+        background: linear-gradient(135deg, #f97316, #dc2626);
+        color: white;
+        padding: 0.625rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(249, 115, 22, 0.3);
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
+    
+    .btn-inter:hover {
+        background: linear-gradient(135deg, #ea580c, #b91c1c);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(249, 115, 22, 0.4);
+    }
+    
+    .btn-inter:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
+    }
+    
+    .dark .btn-inter {
+        background: linear-gradient(135deg, #fb923c, #f87171);
+        box-shadow: 0 4px 6px rgba(251, 146, 60, 0.4);
+    }
+    
+    .dark .btn-inter:hover {
+        background: linear-gradient(135deg, #f97316, #ef4444);
+        box-shadow: 0 6px 12px rgba(251, 146, 60, 0.5);
+    }
+    
     .input-field {
-        @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg shadow-inner border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:outline-none transition-all;
+        background-color: white;
+        color: #1f2937;
+        padding: 0.75rem;
+        border-radius: 12px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+        outline: none;
+        border-color: #a855f7;
+        box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    }
+    
+    .dark .input-field {
+        background-color: #374151;
+        color: white;
+        border-color: #4b5563;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark .input-field:focus {
+        border-color: #c084fc;
+        box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 `;
 document.head.appendChild(style);
