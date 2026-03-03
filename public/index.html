@@ -1,89 +1,525 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.10.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.10.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Mode Calculator</title>
+    <link rel="stylesheet" href="./dist/output.css">
+    <style>
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
-      });
-    </script>
-  </body>
+        .dark .glow {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+        }
+        
+        /* Input field dark mode fix with amazing animations */
+        input[type="number"],
+        input[type="text"],
+        input[type="date"] {
+            background-color: white;
+            color: #1f2937;
+            border: 2px solid #d1d5db;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark input[type="number"],
+        .dark input[type="text"],
+        .dark input[type="date"] {
+            background-color: #374151 !important;
+            color: white !important;
+            border: 2px solid #4b5563 !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        input[type="number"]::placeholder,
+        input[type="text"]::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        
+        .dark input[type="number"]::placeholder,
+        .dark input[type="text"]::placeholder {
+            color: #6b7280 !important;
+        }
+        
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2), 0 4px 12px rgba(168, 85, 247, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .dark input[type="number"]:focus,
+        .dark input[type="text"]:focus,
+        .dark input[type="date"]:focus {
+            border-color: #c084fc !important;
+            box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.3), 0 6px 16px rgba(168, 85, 247, 0.5) !important;
+        }
+        
+        input[type="number"]:hover,
+        input[type="text"]:hover,
+        input[type="date"]:hover {
+            border-color: #9333ea;
+            box-shadow: 0 4px 8px rgba(147, 51, 234, 0.15);
+        }
+        
+        .dark input[type="number"]:hover,
+        .dark input[type="text"]:hover,
+        .dark input[type="date"]:hover {
+            border-color: #a855f7 !important;
+            box-shadow: 0 6px 12px rgba(168, 85, 247, 0.4) !important;
+        }
+        
+        /* Button animations */
+        button {
+            transition: all 0.2s ease;
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .scale-95 {
+            transform: scale(0.95);
+        }
+        
+        .scale-105 {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+        
+        /* History panel animation */
+        #historyPanel {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        /* Select dropdown styling */
+        select {
+            background-color: white;
+            color: #1f2937;
+            border: 2px solid #d1d5db;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dark select {
+            background-color: #374151 !important;
+            color: white !important;
+            border: 2px solid #4b5563 !important;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+    
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-700 dark:to-purple-800 text-white p-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center flex-wrap gap-3">
+            <h1 class="text-3xl font-bold">🧮 Smart Calculator</h1>
+            <div class="flex gap-3 flex-wrap items-center">
+                <button id="copyBtn" onclick="copyResult()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold border border-white/30">
+                    📋 Copy
+                </button>
+                <button id="historyBtn" onclick="toggleHistory()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold border border-white/30">
+                    📜 History
+                </button>
+                <button id="soundToggle" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold border border-white/30">
+                    🔇 Sound
+                </button>
+                <button id="themeToggle" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold">
+                    <span class="dark:hidden">🌙 Dark</span>
+                    <span class="hidden dark:inline">☀️ Light</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- History Panel -->
+    <div id="historyPanel" class="hidden fixed right-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto">
+        <div class="p-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white sticky top-0">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold">📜 History</h2>
+                <button onclick="toggleHistory()" class="text-2xl hover:bg-white/20 px-2 rounded">×</button>
+            </div>
+            <button onclick="clearHistory()" class="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded text-sm w-full">
+                Clear All
+            </button>
+        </div>
+        <div id="historyList" class="p-4"></div>
+    </div>
+
+    <!-- Mode Selection Buttons -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="flex justify-center gap-4 flex-wrap">
+            <button onclick="switchMode('basic')" class="mode-btn bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                📚 5th Class
+            </button>
+            <button onclick="switchMode('scientific')" class="mode-btn bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🔬 10th Class
+            </button>
+            <button onclick="switchMode('intermediate')" class="mode-btn bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🧪 12th Class
+            </button>
+            <button onclick="switchMode('advanced')" class="mode-btn bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🎓 16th Class
+            </button>
+            <button onclick="switchMode('utilities')" class="mode-btn bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                🔧 Utilities
+            </button>
+        </div>
+    </div>
+
+    <!-- Calculator Container -->
+    <div class="container mx-auto mt-8 px-4 pb-12">
+        
+        <!-- 5th Class - Basic Calculator -->
+        <div id="basicCalculator" class="calculator-mode hidden">
+            <div class="max-w-md mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                <div class="mb-4">
+                    <input type="text" id="basicDisplay" readonly class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-right text-3xl p-4 rounded-lg shadow-inner font-mono" value="0">
+                </div>
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="clearDisplay()" class="col-span-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-600 dark:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-red-400 dark:border-red-500">C</button>
+                    <button onclick="backspace()" class="bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 dark:from-orange-600 dark:to-orange-700 dark:hover:from-orange-700 dark:hover:to-orange-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-orange-400 dark:border-orange-500">⌫</button>
+                    <button onclick="appendToDisplay('/')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">÷</button>
+                    
+                    <button onclick="appendToDisplay('7')" class="btn-calc">7</button>
+                    <button onclick="appendToDisplay('8')" class="btn-calc">8</button>
+                    <button onclick="appendToDisplay('9')" class="btn-calc">9</button>
+                    <button onclick="appendToDisplay('*')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">×</button>
+                    
+                    <button onclick="appendToDisplay('4')" class="btn-calc">4</button>
+                    <button onclick="appendToDisplay('5')" class="btn-calc">5</button>
+                    <button onclick="appendToDisplay('6')" class="btn-calc">6</button>
+                    <button onclick="appendToDisplay('-')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">−</button>
+                    
+                    <button onclick="appendToDisplay('1')" class="btn-calc">1</button>
+                    <button onclick="appendToDisplay('2')" class="btn-calc">2</button>
+                    <button onclick="appendToDisplay('3')" class="btn-calc">3</button>
+                    <button onclick="appendToDisplay('+')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">+</button>
+                    
+                    <button onclick="appendToDisplay('0')" class="btn-calc col-span-2">0</button>
+                    <button onclick="appendToDisplay('.')" class="btn-calc">.</button>
+                    <button onclick="calculate()" class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-green-400 dark:border-green-500">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10th Class - Scientific Calculator -->
+        <div id="scientificCalculator" class="calculator-mode hidden">
+            <div class="max-w-2xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                <div class="mb-4">
+                    <input type="text" id="scientificDisplay" readonly class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-right text-3xl p-4 rounded-lg shadow-inner font-mono" value="0">
+                </div>
+                
+                <!-- Scientific Functions -->
+                <div class="grid grid-cols-5 gap-2 mb-3">
+                    <button onclick="scientificFunc('sin')" class="btn-sci">sin</button>
+                    <button onclick="scientificFunc('cos')" class="btn-sci">cos</button>
+                    <button onclick="scientificFunc('tan')" class="btn-sci">tan</button>
+                    <button onclick="scientificFunc('log')" class="btn-sci">log</button>
+                    <button onclick="scientificFunc('sqrt')" class="btn-sci">√</button>
+                    
+                    <button onclick="appendToDisplay('(')" class="btn-sci">(</button>
+                    <button onclick="appendToDisplay(')')" class="btn-sci">)</button>
+                    <button onclick="scientificFunc('square')" class="btn-sci">x²</button>
+                    <button onclick="scientificFunc('power')" class="btn-sci">xʸ</button>
+                    <button onclick="appendToDisplay('%')" class="btn-sci">%</button>
+                </div>
+                
+                <!-- Basic Buttons -->
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="clearDisplay()" class="col-span-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-600 dark:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-red-400 dark:border-red-500">C</button>
+                    <button onclick="backspace()" class="bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 dark:from-orange-600 dark:to-orange-700 dark:hover:from-orange-700 dark:hover:to-orange-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-orange-400 dark:border-orange-500">⌫</button>
+                    <button onclick="appendToDisplay('/')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">÷</button>
+                    
+                    <button onclick="appendToDisplay('7')" class="btn-calc">7</button>
+                    <button onclick="appendToDisplay('8')" class="btn-calc">8</button>
+                    <button onclick="appendToDisplay('9')" class="btn-calc">9</button>
+                    <button onclick="appendToDisplay('*')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">×</button>
+                    
+                    <button onclick="appendToDisplay('4')" class="btn-calc">4</button>
+                    <button onclick="appendToDisplay('5')" class="btn-calc">5</button>
+                    <button onclick="appendToDisplay('6')" class="btn-calc">6</button>
+                    <button onclick="appendToDisplay('-')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">−</button>
+                    
+                    <button onclick="appendToDisplay('1')" class="btn-calc">1</button>
+                    <button onclick="appendToDisplay('2')" class="btn-calc">2</button>
+                    <button onclick="appendToDisplay('3')" class="btn-calc">3</button>
+                    <button onclick="appendToDisplay('+')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">+</button>
+                    
+                    <button onclick="appendToDisplay('0')" class="btn-calc col-span-2">0</button>
+                    <button onclick="appendToDisplay('.')" class="btn-calc">.</button>
+                    <button onclick="calculate()" class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-green-400 dark:border-green-500">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12th Class - Intermediate Scientific Calculator -->
+        <div id="intermediateCalculator" class="calculator-mode hidden">
+            <div class="max-w-2xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Display -->
+                <div class="mb-4">
+                    <input type="text" id="intermediateDisplay" readonly class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-right text-3xl p-4 rounded-lg shadow-inner font-mono" value="0">
+                </div>
+                
+                <!-- Degree/Radian Toggle -->
+                <div class="mb-4 flex justify-center">
+                    <button id="angleToggle" onclick="toggleAngleMode()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg">
+                        Mode: <span id="angleMode">DEG</span>
+                    </button>
+                </div>
+                
+                <!-- Advanced Scientific Functions -->
+                <div class="grid grid-cols-5 gap-2 mb-3">
+                    <button onclick="intermediateFunc('sin')" class="btn-inter">sin</button>
+                    <button onclick="intermediateFunc('cos')" class="btn-inter">cos</button>
+                    <button onclick="intermediateFunc('tan')" class="btn-inter">tan</button>
+                    <button onclick="intermediateFunc('asin')" class="btn-inter">sin⁻¹</button>
+                    <button onclick="intermediateFunc('acos')" class="btn-inter">cos⁻¹</button>
+                    
+                    <button onclick="intermediateFunc('atan')" class="btn-inter">tan⁻¹</button>
+                    <button onclick="intermediateFunc('log')" class="btn-inter">log</button>
+                    <button onclick="intermediateFunc('ln')" class="btn-inter">ln</button>
+                    <button onclick="intermediateFunc('exp')" class="btn-inter">eˣ</button>
+                    <button onclick="intermediateFunc('sqrt')" class="btn-inter">√</button>
+                    
+                    <button onclick="intermediateFunc('factorial')" class="btn-inter">n!</button>
+                    <button onclick="intermediateFunc('abs')" class="btn-inter">|x|</button>
+                    <button onclick="appendToDisplay('(')" class="btn-inter">(</button>
+                    <button onclick="appendToDisplay(')')" class="btn-inter">)</button>
+                    <button onclick="appendToDisplay('^')" class="btn-inter">xʸ</button>
+                    
+                    <button onclick="appendToDisplay('Math.PI')" class="btn-inter">π</button>
+                    <button onclick="appendToDisplay('Math.E')" class="btn-inter">e</button>
+                    <button onclick="intermediateFunc('square')" class="btn-inter">x²</button>
+                    <button onclick="intermediateFunc('cube')" class="btn-inter">x³</button>
+                    <button onclick="appendToDisplay('%')" class="btn-inter">%</button>
+                </div>
+                
+                <!-- Basic Buttons -->
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="clearDisplay()" class="col-span-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-600 dark:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-red-400 dark:border-red-500">C</button>
+                    <button onclick="backspace()" class="bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 dark:from-orange-600 dark:to-orange-700 dark:hover:from-orange-700 dark:hover:to-orange-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-orange-400 dark:border-orange-500">⌫</button>
+                    <button onclick="appendToDisplay('/')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">÷</button>
+                    
+                    <button onclick="appendToDisplay('7')" class="btn-calc">7</button>
+                    <button onclick="appendToDisplay('8')" class="btn-calc">8</button>
+                    <button onclick="appendToDisplay('9')" class="btn-calc">9</button>
+                    <button onclick="appendToDisplay('*')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">×</button>
+                    
+                    <button onclick="appendToDisplay('4')" class="btn-calc">4</button>
+                    <button onclick="appendToDisplay('5')" class="btn-calc">5</button>
+                    <button onclick="appendToDisplay('6')" class="btn-calc">6</button>
+                    <button onclick="appendToDisplay('-')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">−</button>
+                    
+                    <button onclick="appendToDisplay('1')" class="btn-calc">1</button>
+                    <button onclick="appendToDisplay('2')" class="btn-calc">2</button>
+                    <button onclick="appendToDisplay('3')" class="btn-calc">3</button>
+                    <button onclick="appendToDisplay('+')" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-blue-400 dark:border-blue-500">+</button>
+                    
+                    <button onclick="appendToDisplay('0')" class="btn-calc col-span-2">0</button>
+                    <button onclick="appendToDisplay('.')" class="btn-calc">.</button>
+                    <button onclick="calculate()" class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800 text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold text-xl border border-green-400 dark:border-green-500">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 16th Class - Advanced Calculator -->
+        <div id="advancedCalculator" class="calculator-mode hidden">
+            <div class="max-w-4xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Tabs -->
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="switchAdvancedTab('quadratic')" class="adv-tab bg-purple-500 text-white px-6 py-2 rounded-lg">Quadratic Solver</button>
+                    <button onclick="switchAdvancedTab('matrix')" class="adv-tab bg-purple-500 text-white px-6 py-2 rounded-lg">Matrix Calculator</button>
+                    <button onclick="switchAdvancedTab('gpa')" class="adv-tab bg-purple-500 text-white px-6 py-2 rounded-lg">GPA Calculator</button>
+                </div>
+
+                <!-- Quadratic Solver -->
+                <div id="quadraticTab" class="adv-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Quadratic Equation Solver (ax² + bx + c = 0)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <input type="number" id="coeffA" placeholder="a" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                        <input type="number" id="coeffB" placeholder="b" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                        <input type="number" id="coeffC" placeholder="c" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                    </div>
+                    <button onclick="solveQuadratic()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Solve</button>
+                    <div id="quadraticResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                </div>
+
+                <!-- Matrix Calculator -->
+                <div id="matrixTab" class="adv-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">2×2 Matrix Addition</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2 font-semibold">Matrix A:</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="a11" placeholder="a11" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="a12" placeholder="a12" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="a21" placeholder="a21" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="a22" placeholder="a22" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2 font-semibold">Matrix B:</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="b11" placeholder="b11" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="b12" placeholder="b12" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="b21" placeholder="b21" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                <input type="number" id="b22" placeholder="b22" class="input-field placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="addMatrices()" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Add Matrices</button>
+                    <div id="matrixResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                </div>
+
+                <!-- GPA Calculator -->
+                <div id="gpaTab" class="adv-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">GPA Calculator</h3>
+                    <div id="courseContainer"></div>
+                    <button onclick="addCourse()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all font-semibold">+ Add Course</button>
+                    <button onclick="calculateGPA()" class="mt-4 ml-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all font-semibold">Calculate GPA</button>
+                    <div id="gpaResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Utilities Calculator -->
+        <div id="utilitiesCalculator" class="calculator-mode hidden">
+            <div class="max-w-4xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Utility Tabs -->
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="switchUtilityTab('unit')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Unit Converter</button>
+                    <button onclick="switchUtilityTab('percentage')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Percentage</button>
+                    <button onclick="switchUtilityTab('age')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Age Calculator</button>
+                    <button onclick="switchUtilityTab('bmi')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">BMI Calculator</button>
+                    <button onclick="switchUtilityTab('currency')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Currency Converter</button>
+                </div>
+
+                <!-- Unit Converter -->
+                <div id="unitTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔄 Unit Converter</h3>
+                    <div class="space-y-4">
+                        <select id="unitCategory" onchange="updateUnitOptions()" class="input-field w-full">
+                            <option value="length">Length</option>
+                            <option value="weight">Weight</option>
+                            <option value="temperature">Temperature</option>
+                        </select>
+                        <input type="number" id="unitValue" placeholder="Enter value" class="input-field w-full">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="fromUnit" class="input-field"></select>
+                            <select id="toUnit" class="input-field"></select>
+                        </div>
+                        <button onclick="convertUnit()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
+                        <div id="unitResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Percentage Calculator -->
+                <div id="percentageTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📊 Percentage Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="percentType" class="input-field w-full">
+                            <option value="of">What is X% of Y?</option>
+                            <option value="is">X is what % of Y?</option>
+                            <option value="change">% change from X to Y</option>
+                        </select>
+                        <input type="number" id="percentNum1" placeholder="First number" class="input-field w-full">
+                        <input type="number" id="percentNum2" placeholder="Second number" class="input-field w-full">
+                        <button onclick="calculatePercentage()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="percentResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Age Calculator -->
+                <div id="ageTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🎂 Age Calculator</h3>
+                    <div class="space-y-4">
+                        <input type="date" id="birthDate" class="input-field w-full">
+                        <button onclick="calculateAge()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate Age</button>
+                        <div id="ageResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- BMI Calculator -->
+                <div id="bmiTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">⚖️ BMI Calculator</h3>
+                    <div class="space-y-4">
+                        <input type="number" id="bmiWeight" placeholder="Weight (kg)" class="input-field w-full">
+                        <input type="number" id="bmiHeight" placeholder="Height (cm)" class="input-field w-full">
+                        <button onclick="calculateBMI()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate BMI</button>
+                        <div id="bmiResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Currency Converter -->
+                <div id="currencyTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">💱 Currency Converter</h3>
+                    <div class="space-y-4">
+                        <input type="number" id="currencyAmount" placeholder="Amount" class="input-field w-full">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="fromCurrency" class="input-field">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="INR">INR</option>
+                                <option value="PKR">PKR</option>
+                                <option value="AUD">AUD</option>
+                                <option value="CAD">CAD</option>
+                            </select>
+                            <select id="toCurrency" class="input-field">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="INR">INR</option>
+                                <option value="PKR">PKR</option>
+                                <option value="AUD">AUD</option>
+                                <option value="CAD">CAD</option>
+                            </select>
+                        </div>
+                        <button onclick="convertCurrency()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
+                        <div id="currencyResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
