@@ -14,7 +14,10 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 
 // Keyboard Support
 document.addEventListener('keydown', (e) => {
-    if (!currentDisplay) return;
+    // Only work when calculator display is active (not in input fields)
+    if (!currentDisplay || document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') {
+        return;
+    }
     
     // Number keys
     if (e.key >= '0' && e.key <= '9') {
@@ -23,9 +26,24 @@ document.addEventListener('keydown', (e) => {
         playSound();
     }
     // Operators
-    else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+    else if (e.key === '+') {
         e.preventDefault();
-        appendToDisplay(e.key);
+        appendToDisplay('+');
+        playSound();
+    }
+    else if (e.key === '-') {
+        e.preventDefault();
+        appendToDisplay('-');
+        playSound();
+    }
+    else if (e.key === '*') {
+        e.preventDefault();
+        appendToDisplay('*');
+        playSound();
+    }
+    else if (e.key === '/') {
+        e.preventDefault();
+        appendToDisplay('/');
         playSound();
     }
     // Decimal point
@@ -53,9 +71,14 @@ document.addEventListener('keydown', (e) => {
         playSound();
     }
     // Parentheses
-    else if (e.key === '(' || e.key === ')') {
+    else if (e.key === '(') {
         e.preventDefault();
-        appendToDisplay(e.key);
+        appendToDisplay('(');
+        playSound();
+    }
+    else if (e.key === ')') {
+        e.preventDefault();
+        appendToDisplay(')');
         playSound();
     }
 });
@@ -84,10 +107,10 @@ function playSound() {
 function toggleSound() {
     soundEnabled = !soundEnabled;
     const btn = document.getElementById('soundToggle');
-    btn.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+    btn.innerHTML = soundEnabled ? '🔊 Sound' : '🔇 Sound';
     btn.className = soundEnabled 
-        ? 'bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-md transition-all'
-        : 'bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow-md transition-all';
+        ? 'bg-green-500/30 hover:bg-green-500/40 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold border border-green-400/50'
+        : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold border border-white/30';
 }
 
 // Save to History
@@ -178,6 +201,7 @@ function toggleHistory() {
 // Copy Result to Clipboard
 function copyResult() {
     if (!currentDisplay || currentDisplay.value === '0' || currentDisplay.value === 'Error') {
+        alert('No result to copy!');
         return;
     }
     
@@ -185,12 +209,14 @@ function copyResult() {
         const btn = document.getElementById('copyBtn');
         const originalText = btn.innerHTML;
         btn.innerHTML = '✓ Copied!';
-        btn.className = 'bg-green-500 text-white px-4 py-2 rounded-lg shadow-md';
+        btn.className = 'bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-xl shadow-lg font-semibold border border-green-400';
         
         setTimeout(() => {
             btn.innerHTML = originalText;
-            btn.className = 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition-all';
+            btn.className = 'bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold border border-white/30';
         }, 1500);
+    }).catch(() => {
+        alert('Failed to copy!');
     });
 }
 
@@ -236,14 +262,20 @@ window.onload = () => {
 // ===== BASIC & SCIENTIFIC CALCULATOR FUNCTIONS =====
 
 function appendToDisplay(value) {
+    if (!currentDisplay) return;
+    
     if (currentDisplay.value === '0' || currentDisplay.value === 'Error') {
         currentDisplay.value = value;
     } else {
         currentDisplay.value += value;
     }
-    // Add button animation
-    event.target?.classList.add('scale-95');
-    setTimeout(() => event.target?.classList.remove('scale-95'), 100);
+    
+    // Add button animation if triggered by button click
+    if (window.event && window.event.target) {
+        const target = window.event.target;
+        target.classList.add('scale-95');
+        setTimeout(() => target.classList.remove('scale-95'), 100);
+    }
 }
 
 function clearDisplay() {
