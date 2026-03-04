@@ -962,15 +962,36 @@ function switchUtilityTab(tab) {
 
 // Pre-loaded Formula Library
 const formulaLibrary = [
-    // Physics Formulas
+    // Physics Formulas - Mechanics
     { name: "Newton's Second Law", expression: "F = m × a", variables: ["F", "m", "a"], category: "physics", description: "Force = Mass × Acceleration" },
+    { name: "Momentum", expression: "p = m × v", variables: ["p", "m", "v"], category: "physics", description: "Linear Momentum" },
+    { name: "Impulse", expression: "J = F × Δt", variables: ["J", "F", "Δt"], category: "physics", description: "Impulse = Force × Time" },
+    { name: "Work", expression: "W = F × d × cos(θ)", variables: ["W", "F", "d", "θ"], category: "physics", description: "Work done by force" },
     { name: "Kinetic Energy", expression: "KE = 0.5 × m × v²", variables: ["KE", "m", "v"], category: "physics", description: "Kinetic Energy formula" },
     { name: "Potential Energy", expression: "PE = m × g × h", variables: ["PE", "m", "g", "h"], category: "physics", description: "Gravitational Potential Energy" },
     { name: "Velocity", expression: "v = u + a × t", variables: ["v", "u", "a", "t"], category: "physics", description: "Final velocity with constant acceleration" },
     { name: "Distance", expression: "s = u × t + 0.5 × a × t²", variables: ["s", "u", "a", "t"], category: "physics", description: "Distance with constant acceleration" },
     { name: "Power", expression: "P = W / t", variables: ["P", "W", "t"], category: "physics", description: "Power = Work / Time" },
-    { name: "Ohm's Law", expression: "V = I × R", variables: ["V", "I", "R"], category: "physics", description: "Voltage = Current × Resistance" },
+    { name: "Gravitational Force", expression: "F = G × m₁ × m₂ / r²", variables: ["F", "G", "m1", "m2", "r"], category: "physics", description: "Newton's Law of Gravitation (G = 6.67×10⁻¹¹)" },
+    { name: "Centripetal Force", expression: "F = m × v² / r", variables: ["F", "m", "v", "r"], category: "physics", description: "Force in circular motion" },
+    { name: "Pressure", expression: "P = F / A", variables: ["P", "F", "A"], category: "physics", description: "Pressure = Force / Area" },
     { name: "Density", expression: "ρ = m / V", variables: ["ρ", "m", "V"], category: "physics", description: "Density = Mass / Volume" },
+    
+    // Physics Formulas - Waves & Oscillations
+    { name: "Wave Speed", expression: "v = f × λ", variables: ["v", "f", "λ"], category: "physics", description: "Wave velocity = Frequency × Wavelength" },
+    { name: "Frequency", expression: "f = 1 / T", variables: ["f", "T"], category: "physics", description: "Frequency = 1 / Time Period" },
+    
+    // Physics Formulas - Electricity & Magnetism
+    { name: "Ohm's Law", expression: "V = I × R", variables: ["V", "I", "R"], category: "physics", description: "Voltage = Current × Resistance" },
+    { name: "Electric Power", expression: "P = V × I", variables: ["P", "V", "I"], category: "physics", description: "Electrical Power" },
+    { name: "Resistance in Series", expression: "R = R₁ + R₂", variables: ["R", "R1", "R2"], category: "physics", description: "Total resistance in series" },
+    { name: "Resistance in Parallel", expression: "1/R = 1/R₁ + 1/R₂", variables: ["R", "R1", "R2"], category: "physics", description: "Total resistance in parallel" },
+    { name: "Capacitance", expression: "C = Q / V", variables: ["C", "Q", "V"], category: "physics", description: "Capacitance = Charge / Voltage" },
+    { name: "Magnetic Force", expression: "F = B × I × L × sin(θ)", variables: ["F", "B", "I", "L", "θ"], category: "physics", description: "Force on current-carrying conductor" },
+    
+    // Physics Formulas - Optics
+    { name: "Lens Formula", expression: "1/f = 1/v + 1/u", variables: ["f", "v", "u"], category: "physics", description: "Thin lens formula (f=focal length, v=image distance, u=object distance)" },
+    { name: "Magnification", expression: "m = v / u", variables: ["m", "v", "u"], category: "physics", description: "Linear magnification" },
     
     // Mathematics Formulas
     { name: "Quadratic Formula", expression: "x = (-b ± √(b² - 4ac)) / (2a)", variables: ["a", "b", "c"], category: "math", description: "Roots of quadratic equation" },
