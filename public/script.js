@@ -246,6 +246,10 @@ function switchMode(mode) {
         document.getElementById('utilitiesCalculator').classList.remove('hidden');
         switchUtilityTab('unit');
         updateUnitOptions();
+    } else if (mode === 'formulas') {
+        document.getElementById('formulasCalculator').classList.remove('hidden');
+        switchFormulaTab('library');
+        initFormulaLibrary();
     }
     
     if (currentDisplay) {
@@ -952,4 +956,385 @@ function switchUtilityTab(tab) {
     });
     
     document.getElementById(tab + 'Tab').classList.remove('hidden');
+}
+
+// ===== FORMULA STORAGE SYSTEM =====
+
+// Pre-loaded Formula Library
+const formulaLibrary = [
+    // Physics Formulas
+    { name: "Newton's Second Law", expression: "F = m × a", variables: ["F", "m", "a"], category: "physics", description: "Force = Mass × Acceleration" },
+    { name: "Kinetic Energy", expression: "KE = 0.5 × m × v²", variables: ["KE", "m", "v"], category: "physics", description: "Kinetic Energy formula" },
+    { name: "Potential Energy", expression: "PE = m × g × h", variables: ["PE", "m", "g", "h"], category: "physics", description: "Gravitational Potential Energy" },
+    { name: "Velocity", expression: "v = u + a × t", variables: ["v", "u", "a", "t"], category: "physics", description: "Final velocity with constant acceleration" },
+    { name: "Distance", expression: "s = u × t + 0.5 × a × t²", variables: ["s", "u", "a", "t"], category: "physics", description: "Distance with constant acceleration" },
+    { name: "Power", expression: "P = W / t", variables: ["P", "W", "t"], category: "physics", description: "Power = Work / Time" },
+    { name: "Ohm's Law", expression: "V = I × R", variables: ["V", "I", "R"], category: "physics", description: "Voltage = Current × Resistance" },
+    { name: "Density", expression: "ρ = m / V", variables: ["ρ", "m", "V"], category: "physics", description: "Density = Mass / Volume" },
+    
+    // Mathematics Formulas
+    { name: "Quadratic Formula", expression: "x = (-b ± √(b² - 4ac)) / (2a)", variables: ["a", "b", "c"], category: "math", description: "Roots of quadratic equation" },
+    { name: "Pythagorean Theorem", expression: "c² = a² + b²", variables: ["a", "b", "c"], category: "math", description: "Right triangle relationship" },
+    { name: "Distance Formula", expression: "d = √((x₂-x₁)² + (y₂-y₁)²)", variables: ["x1", "y1", "x2", "y2"], category: "math", description: "Distance between two points" },
+    { name: "Slope Formula", expression: "m = (y₂ - y₁) / (x₂ - x₁)", variables: ["x1", "y1", "x2", "y2"], category: "math", description: "Slope of a line" },
+    { name: "Compound Interest", expression: "A = P(1 + r/n)^(nt)", variables: ["P", "r", "n", "t"], category: "math", description: "Compound interest formula" },
+    
+    // Geometry Formulas
+    { name: "Circle Area", expression: "A = π × r²", variables: ["A", "r"], category: "geometry", description: "Area of a circle" },
+    { name: "Circle Circumference", expression: "C = 2 × π × r", variables: ["C", "r"], category: "geometry", description: "Circumference of a circle" },
+    { name: "Rectangle Area", expression: "A = l × w", variables: ["A", "l", "w"], category: "geometry", description: "Area of rectangle" },
+    { name: "Triangle Area", expression: "A = 0.5 × b × h", variables: ["A", "b", "h"], category: "geometry", description: "Area of triangle" },
+    { name: "Sphere Volume", expression: "V = (4/3) × π × r³", variables: ["V", "r"], category: "geometry", description: "Volume of sphere" },
+    { name: "Cylinder Volume", expression: "V = π × r² × h", variables: ["V", "r", "h"], category: "geometry", description: "Volume of cylinder" },
+    
+    // Algebra Formulas
+    { name: "Difference of Squares", expression: "a² - b² = (a + b)(a - b)", variables: ["a", "b"], category: "algebra", description: "Factoring difference of squares" },
+    { name: "Perfect Square", expression: "(a + b)² = a² + 2ab + b²", variables: ["a", "b"], category: "algebra", description: "Expanding perfect square" },
+    { name: "Sum of Arithmetic Series", expression: "S = n/2 × (a + l)", variables: ["S", "n", "a", "l"], category: "algebra", description: "Sum of arithmetic progression" },
+    
+    // Chemistry Formulas
+    { name: "Ideal Gas Law", expression: "PV = nRT", variables: ["P", "V", "n", "R", "T"], category: "chemistry", description: "Ideal gas equation" },
+    { name: "Molarity", expression: "M = n / V", variables: ["M", "n", "V"], category: "chemistry", description: "Molar concentration" },
+    { name: "pH Formula", expression: "pH = -log[H⁺]", variables: ["H"], category: "chemistry", description: "pH calculation" },
+];
+
+// User's saved formulas (loaded from localStorage)
+let savedFormulas = [];
+
+// Load saved formulas from localStorage
+function loadSavedFormulas() {
+    const saved = localStorage.getItem('savedFormulas');
+    if (saved) {
+        savedFormulas = JSON.parse(saved);
+    }
+}
+
+// Save formulas to localStorage
+function saveTolocalStorage() {
+    localStorage.setItem('savedFormulas', JSON.stringify(savedFormulas));
+}
+
+// Initialize formula library display
+function initFormulaLibrary() {
+    loadSavedFormulas();
+    displayFormulaLibrary();
+    displaySavedFormulas();
+}
+
+// Display formula library
+function displayFormulaLibrary() {
+    const container = document.getElementById('formulaLibraryList');
+    if (!container) return;
+    
+    const category = document.getElementById('formulaCategory')?.value || 'all';
+    const searchTerm = document.getElementById('formulaSearch')?.value.toLowerCase() || '';
+    
+    let filteredFormulas = formulaLibrary;
+    
+    if (category !== 'all') {
+        filteredFormulas = filteredFormulas.filter(f => f.category === category);
+    }
+    
+    if (searchTerm) {
+        filteredFormulas = filteredFormulas.filter(f => 
+            f.name.toLowerCase().includes(searchTerm) || 
+            f.description.toLowerCase().includes(searchTerm) ||
+            f.expression.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (filteredFormulas.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center col-span-2 py-8">No formulas found</p>';
+        return;
+    }
+    
+    let html = '';
+    filteredFormulas.forEach((formula, index) => {
+        const categoryColors = {
+            physics: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
+            math: 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200',
+            chemistry: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
+            geometry: 'bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200',
+            algebra: 'bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200'
+        };
+        
+        html += `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow hover:shadow-lg transition-all">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-bold text-lg text-gray-800 dark:text-white">${formula.name}</h4>
+                    <span class="text-xs px-2 py-1 rounded ${categoryColors[formula.category]}">${formula.category}</span>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">${formula.description}</p>
+                <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded font-mono text-sm mb-3 text-gray-800 dark:text-white">
+                    ${formula.expression}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="useFormula(${index}, 'library')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded text-sm font-semibold transition-all">
+                        🧮 Use Formula
+                    </button>
+                    <button onclick="saveToMyFormulas(${index})" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm font-semibold transition-all">
+                        💾 Save
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Display saved formulas
+function displaySavedFormulas() {
+    const container = document.getElementById('savedFormulasList');
+    if (!container) return;
+    
+    if (savedFormulas.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center col-span-2 py-8">No saved formulas yet. Add your own or save from library!</p>';
+        return;
+    }
+    
+    let html = '';
+    savedFormulas.forEach((formula, index) => {
+        const categoryColors = {
+            physics: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
+            math: 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200',
+            chemistry: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
+            geometry: 'bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200',
+            algebra: 'bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200',
+            custom: 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+        };
+        
+        html += `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow hover:shadow-lg transition-all">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-bold text-lg text-gray-800 dark:text-white">${formula.name}</h4>
+                    <span class="text-xs px-2 py-1 rounded ${categoryColors[formula.category]}">${formula.category}</span>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">${formula.description || 'No description'}</p>
+                <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded font-mono text-sm mb-3 text-gray-800 dark:text-white">
+                    ${formula.expression}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="useFormula(${index}, 'saved')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded text-sm font-semibold transition-all">
+                        🧮 Use Formula
+                    </button>
+                    <button onclick="deleteSavedFormula(${index})" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm font-semibold transition-all">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Save custom formula
+function saveCustomFormula() {
+    const name = document.getElementById('newFormulaName').value.trim();
+    const expression = document.getElementById('newFormulaExpression').value.trim();
+    const variablesStr = document.getElementById('newFormulaVariables').value.trim();
+    const category = document.getElementById('newFormulaCategory').value;
+    const description = document.getElementById('newFormulaDescription').value.trim();
+    
+    if (!name || !expression || !variablesStr) {
+        alert('Please fill in all required fields (Name, Expression, Variables)');
+        return;
+    }
+    
+    const variables = variablesStr.split(',').map(v => v.trim());
+    
+    const newFormula = {
+        name,
+        expression,
+        variables,
+        category,
+        description: description || 'Custom formula'
+    };
+    
+    savedFormulas.push(newFormula);
+    saveTolocalStorage();
+    displaySavedFormulas();
+    
+    // Clear form
+    document.getElementById('newFormulaName').value = '';
+    document.getElementById('newFormulaExpression').value = '';
+    document.getElementById('newFormulaVariables').value = '';
+    document.getElementById('newFormulaDescription').value = '';
+    
+    alert('Formula saved successfully! ✅');
+}
+
+// Save from library to my formulas
+function saveToMyFormulas(index) {
+    const formula = formulaLibrary[index];
+    
+    // Check if already saved
+    const alreadySaved = savedFormulas.some(f => f.name === formula.name && f.expression === formula.expression);
+    
+    if (alreadySaved) {
+        alert('This formula is already in your saved formulas!');
+        return;
+    }
+    
+    savedFormulas.push({...formula});
+    saveTolocalStorage();
+    displaySavedFormulas();
+    
+    alert('Formula saved to My Formulas! ✅');
+}
+
+// Delete saved formula
+function deleteSavedFormula(index) {
+    if (confirm('Are you sure you want to delete this formula?')) {
+        savedFormulas.splice(index, 1);
+        saveTolocalStorage();
+        displaySavedFormulas();
+    }
+}
+
+// Use formula for calculation
+function useFormula(index, source) {
+    const formula = source === 'library' ? formulaLibrary[index] : savedFormulas[index];
+    
+    switchFormulaTab('calculator');
+    
+    const container = document.getElementById('formulaCalculatorContent');
+    
+    let html = `
+        <h4 class="font-bold text-xl mb-3 text-gray-800 dark:text-white">${formula.name}</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">${formula.description}</p>
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded font-mono text-lg mb-4 text-center text-gray-800 dark:text-white">
+            ${formula.expression}
+        </div>
+        <h5 class="font-semibold mb-3 text-gray-800 dark:text-white">Enter Values:</h5>
+        <div class="space-y-3" id="formulaInputs">
+    `;
+    
+    formula.variables.forEach(variable => {
+        html += `
+            <div class="flex items-center gap-3">
+                <label class="w-20 font-semibold text-gray-700 dark:text-gray-300">${variable} =</label>
+                <input type="number" step="any" id="var_${variable}" placeholder="Enter ${variable}" class="input-field flex-1">
+            </div>
+        `;
+    });
+    
+    html += `
+        </div>
+        <button onclick="calculateFormula('${source}', ${index})" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+            Calculate
+        </button>
+    `;
+    
+    container.innerHTML = html;
+}
+
+// Calculate formula result
+function calculateFormula(source, index) {
+    const formula = source === 'library' ? formulaLibrary[index] : savedFormulas[index];
+    const resultDiv = document.getElementById('formulaCalculatorResult');
+    
+    let expression = formula.expression;
+    let values = {};
+    let allFilled = true;
+    
+    // Get all variable values
+    formula.variables.forEach(variable => {
+        const input = document.getElementById(`var_${variable}`);
+        if (input) {
+            const value = parseFloat(input.value);
+            if (isNaN(value)) {
+                allFilled = false;
+            } else {
+                values[variable] = value;
+            }
+        }
+    });
+    
+    if (!allFilled) {
+        resultDiv.innerHTML = '<p class="text-red-500 font-semibold">⚠️ Please fill in all variables!</p>';
+        resultDiv.classList.remove('hidden');
+        return;
+    }
+    
+    // Try to calculate (simplified - works for basic formulas)
+    try {
+        // Replace variables with values
+        let calcExpression = expression;
+        
+        // Replace common symbols
+        calcExpression = calcExpression.replace(/×/g, '*');
+        calcExpression = calcExpression.replace(/÷/g, '/');
+        calcExpression = calcExpression.replace(/π/g, 'Math.PI');
+        
+        // Replace variables
+        Object.keys(values).forEach(variable => {
+            const regex = new RegExp(variable, 'g');
+            calcExpression = calcExpression.replace(regex, values[variable]);
+        });
+        
+        // Remove subscripts and special characters for calculation
+        calcExpression = calcExpression.replace(/[₀₁₂₃₄₅₆₇₈₉⁺⁻]/g, '');
+        
+        let result;
+        
+        // Handle special cases
+        if (calcExpression.includes('±')) {
+            resultDiv.innerHTML = `
+                <h4 class="font-bold text-lg mb-2 text-gray-800 dark:text-white">Result:</h4>
+                <p class="text-gray-600 dark:text-gray-400 mb-2">This formula has multiple solutions (±)</p>
+                <p class="text-lg text-gray-800 dark:text-white">Please calculate manually or use the quadratic solver in Advanced mode.</p>
+            `;
+        } else {
+            // Try to evaluate
+            result = eval(calcExpression);
+            
+            let valuesHtml = '<div class="mb-3">';
+            Object.keys(values).forEach(variable => {
+                valuesHtml += `<p class="text-sm text-gray-600 dark:text-gray-400">${variable} = ${values[variable]}</p>`;
+            });
+            valuesHtml += '</div>';
+            
+            resultDiv.innerHTML = `
+                <h4 class="font-bold text-lg mb-2 text-gray-800 dark:text-white">Result:</h4>
+                ${valuesHtml}
+                <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">${result.toFixed(6).replace(/\.?0+$/, '')}</p>
+            `;
+        }
+        
+        resultDiv.classList.remove('hidden');
+        
+    } catch (error) {
+        resultDiv.innerHTML = `
+            <p class="text-orange-500 font-semibold">⚠️ Cannot auto-calculate this formula</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">This formula may require manual calculation or special handling.</p>
+        `;
+        resultDiv.classList.remove('hidden');
+    }
+}
+
+// Switch formula tab
+function switchFormulaTab(tab) {
+    document.querySelectorAll('.formula-tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    document.getElementById(tab + 'Tab').classList.remove('hidden');
+    
+    if (tab === 'library') {
+        displayFormulaLibrary();
+    } else if (tab === 'saved') {
+        displaySavedFormulas();
+    }
+}
+
+// Filter formulas by category
+function filterFormulas() {
+    displayFormulaLibrary();
+}
+
+// Search formulas
+function searchFormulas() {
+    displayFormulaLibrary();
 }

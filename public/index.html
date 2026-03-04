@@ -192,6 +192,9 @@
             <button onclick="switchMode('utilities')" class="mode-btn bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
                 🔧 Utilities
             </button>
+            <button onclick="switchMode('formulas')" class="mode-btn bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all font-semibold text-lg">
+                📐 Formulas
+            </button>
         </div>
     </div>
 
@@ -513,6 +516,88 @@
                         <button onclick="convertCurrency()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
                         <div id="currencyResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                     </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Formula Storage Calculator -->
+        <div id="formulasCalculator" class="calculator-mode hidden">
+            <div class="max-w-6xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-2xl glow">
+                
+                <!-- Formula Tabs -->
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="switchFormulaTab('library')" class="formula-tab bg-indigo-500 text-white px-6 py-2 rounded-lg">📚 Formula Library</button>
+                    <button onclick="switchFormulaTab('saved')" class="formula-tab bg-indigo-500 text-white px-6 py-2 rounded-lg">💾 My Formulas</button>
+                    <button onclick="switchFormulaTab('calculator')" class="formula-tab bg-indigo-500 text-white px-6 py-2 rounded-lg">🧮 Calculate</button>
+                </div>
+
+                <!-- Formula Library Tab -->
+                <div id="libraryTab" class="formula-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📚 Formula Library</h3>
+                    
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <select id="formulaCategory" onchange="filterFormulas()" class="input-field w-full">
+                            <option value="all">All Categories</option>
+                            <option value="physics">Physics</option>
+                            <option value="math">Mathematics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="geometry">Geometry</option>
+                            <option value="algebra">Algebra</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="mb-4">
+                        <input type="text" id="formulaSearch" onkeyup="searchFormulas()" placeholder="Search formulas..." class="input-field w-full">
+                    </div>
+
+                    <!-- Formula List -->
+                    <div id="formulaLibraryList" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto"></div>
+                </div>
+
+                <!-- My Formulas Tab -->
+                <div id="savedTab" class="formula-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">💾 My Saved Formulas</h3>
+                    
+                    <!-- Add New Formula -->
+                    <div class="bg-white dark:bg-gray-700 p-4 rounded-lg mb-4 shadow-inner">
+                        <h4 class="font-bold text-lg mb-3 text-gray-800 dark:text-white">Add New Formula</h4>
+                        <div class="space-y-3">
+                            <input type="text" id="newFormulaName" placeholder="Formula Name (e.g., Quadratic Formula)" class="input-field w-full">
+                            <input type="text" id="newFormulaExpression" placeholder="Formula Expression (e.g., (-b±√(b²-4ac))/(2a))" class="input-field w-full">
+                            <input type="text" id="newFormulaVariables" placeholder="Variables (comma separated, e.g., a,b,c)" class="input-field w-full">
+                            <select id="newFormulaCategory" class="input-field w-full">
+                                <option value="math">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="geometry">Geometry</option>
+                                <option value="algebra">Algebra</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <textarea id="newFormulaDescription" placeholder="Description (optional)" class="input-field w-full" rows="2"></textarea>
+                            <button onclick="saveCustomFormula()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                                ➕ Save Formula
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Saved Formulas List -->
+                    <div id="savedFormulasList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
+                <!-- Formula Calculator Tab -->
+                <div id="calculatorTab" class="formula-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🧮 Formula Calculator</h3>
+                    
+                    <div id="formulaCalculatorContent" class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-inner">
+                        <p class="text-gray-500 dark:text-gray-400 text-center py-8">
+                            Select a formula from Library or My Formulas to calculate
+                        </p>
+                    </div>
+
+                    <div id="formulaCalculatorResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner hidden"></div>
                 </div>
 
             </div>
