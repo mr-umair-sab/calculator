@@ -993,12 +993,36 @@ const formulaLibrary = [
     { name: "Lens Formula", expression: "1/f = 1/v + 1/u", variables: ["f", "v", "u"], category: "physics", description: "Thin lens formula (f=focal length, v=image distance, u=object distance)" },
     { name: "Magnification", expression: "m = v / u", variables: ["m", "v", "u"], category: "physics", description: "Linear magnification" },
     
-    // Mathematics Formulas
+    // Mathematics Formulas - Algebra
     { name: "Quadratic Formula", expression: "x = (-b ± √(b² - 4ac)) / (2a)", variables: ["a", "b", "c"], category: "math", description: "Roots of quadratic equation" },
     { name: "Pythagorean Theorem", expression: "c² = a² + b²", variables: ["a", "b", "c"], category: "math", description: "Right triangle relationship" },
     { name: "Distance Formula", expression: "d = √((x₂-x₁)² + (y₂-y₁)²)", variables: ["x1", "y1", "x2", "y2"], category: "math", description: "Distance between two points" },
     { name: "Slope Formula", expression: "m = (y₂ - y₁) / (x₂ - x₁)", variables: ["x1", "y1", "x2", "y2"], category: "math", description: "Slope of a line" },
+    
+    // Mathematics Formulas - Statistics
+    { name: "Arithmetic Mean", expression: "x̄ = Σx / n", variables: ["x", "n"], category: "math", description: "Average of numbers (sum divided by count)" },
+    { name: "Variance", expression: "σ² = Σ(x-x̄)² / n", variables: ["x", "x̄", "n"], category: "math", description: "Measure of data spread" },
+    { name: "Standard Deviation", expression: "σ = √(Σ(x-x̄)² / n)", variables: ["x", "x̄", "n"], category: "math", description: "Square root of variance" },
+    
+    // Mathematics Formulas - Combinatorics
+    { name: "Permutation", expression: "nPr = n! / (n-r)!", variables: ["n", "r"], category: "math", description: "Arrangements where order matters" },
+    { name: "Combination", expression: "nCr = n! / (r! × (n-r)!)", variables: ["n", "r"], category: "math", description: "Selections where order doesn't matter" },
+    
+    // Mathematics Formulas - Financial
+    { name: "Simple Interest", expression: "SI = (P × R × T) / 100", variables: ["P", "R", "T"], category: "math", description: "Interest = Principal × Rate × Time / 100" },
     { name: "Compound Interest", expression: "A = P(1 + r/n)^(nt)", variables: ["P", "r", "n", "t"], category: "math", description: "Compound interest formula" },
+    
+    // Mathematics Formulas - Percentage & Profit/Loss
+    { name: "Percentage", expression: "% = (part / whole) × 100", variables: ["part", "whole"], category: "math", description: "Convert fraction to percentage" },
+    { name: "Profit Percentage", expression: "P% = ((SP - CP) / CP) × 100", variables: ["SP", "CP"], category: "math", description: "Profit % (SP=Selling Price, CP=Cost Price)" },
+    { name: "Loss Percentage", expression: "L% = ((CP - SP) / CP) × 100", variables: ["CP", "SP"], category: "math", description: "Loss % (CP=Cost Price, SP=Selling Price)" },
+    { name: "Discount", expression: "D = MP - SP", variables: ["MP", "SP"], category: "math", description: "Discount = Marked Price - Selling Price" },
+    { name: "Discount Percentage", expression: "D% = ((MP - SP) / MP) × 100", variables: ["MP", "SP"], category: "math", description: "Discount % on Marked Price" },
+    
+    // Mathematics Formulas - Speed, Distance, Time
+    { name: "Speed", expression: "Speed = Distance / Time", variables: ["Distance", "Time"], category: "math", description: "Speed = Distance / Time" },
+    { name: "Distance", expression: "Distance = Speed × Time", variables: ["Speed", "Time"], category: "math", description: "Distance = Speed × Time" },
+    { name: "Time", expression: "Time = Distance / Speed", variables: ["Distance", "Speed"], category: "math", description: "Time = Distance / Speed" },
     
     // Geometry Formulas
     { name: "Circle Area", expression: "A = π × r²", variables: ["A", "r"], category: "geometry", description: "Area of a circle" },
