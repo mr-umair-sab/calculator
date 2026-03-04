@@ -1024,13 +1024,35 @@ const formulaLibrary = [
     { name: "Distance", expression: "Distance = Speed × Time", variables: ["Speed", "Time"], category: "math", description: "Distance = Speed × Time" },
     { name: "Time", expression: "Time = Distance / Speed", variables: ["Distance", "Speed"], category: "math", description: "Time = Distance / Speed" },
     
-    // Geometry Formulas
+    // Geometry Formulas - 2D Shapes
     { name: "Circle Area", expression: "A = π × r²", variables: ["A", "r"], category: "geometry", description: "Area of a circle" },
     { name: "Circle Circumference", expression: "C = 2 × π × r", variables: ["C", "r"], category: "geometry", description: "Circumference of a circle" },
     { name: "Rectangle Area", expression: "A = l × w", variables: ["A", "l", "w"], category: "geometry", description: "Area of rectangle" },
+    { name: "Rectangle Perimeter", expression: "P = 2 × (l + w)", variables: ["P", "l", "w"], category: "geometry", description: "Perimeter of rectangle" },
+    { name: "Square Area", expression: "A = a²", variables: ["A", "a"], category: "geometry", description: "Area of square" },
+    { name: "Square Perimeter", expression: "P = 4 × a", variables: ["P", "a"], category: "geometry", description: "Perimeter of square" },
     { name: "Triangle Area", expression: "A = 0.5 × b × h", variables: ["A", "b", "h"], category: "geometry", description: "Area of triangle" },
+    { name: "Triangle Perimeter", expression: "P = a + b + c", variables: ["P", "a", "b", "c"], category: "geometry", description: "Perimeter of triangle" },
+    { name: "Trapezoid Area", expression: "A = 0.5 × (a + b) × h", variables: ["A", "a", "b", "h"], category: "geometry", description: "Area of trapezoid (a,b = parallel sides, h = height)" },
+    { name: "Parallelogram Area", expression: "A = b × h", variables: ["A", "b", "h"], category: "geometry", description: "Area of parallelogram" },
+    { name: "Rhombus Area", expression: "A = 0.5 × d₁ × d₂", variables: ["A", "d1", "d2"], category: "geometry", description: "Area using diagonals" },
+    { name: "Ellipse Area", expression: "A = π × a × b", variables: ["A", "a", "b"], category: "geometry", description: "Area of ellipse (a,b = semi-axes)" },
+    { name: "Sector Area", expression: "A = 0.5 × r² × θ", variables: ["A", "r", "θ"], category: "geometry", description: "Area of circular sector (θ in radians)" },
+    { name: "Arc Length", expression: "L = r × θ", variables: ["L", "r", "θ"], category: "geometry", description: "Length of arc (θ in radians)" },
+    
+    // Geometry Formulas - 3D Shapes
+    { name: "Cube Volume", expression: "V = a³", variables: ["V", "a"], category: "geometry", description: "Volume of cube" },
+    { name: "Cube Surface Area", expression: "A = 6 × a²", variables: ["A", "a"], category: "geometry", description: "Total surface area of cube" },
+    { name: "Cuboid Volume", expression: "V = l × w × h", variables: ["V", "l", "w", "h"], category: "geometry", description: "Volume of rectangular prism/cuboid" },
+    { name: "Cuboid Surface Area", expression: "A = 2(lw + wh + lh)", variables: ["A", "l", "w", "h"], category: "geometry", description: "Total surface area of cuboid" },
     { name: "Sphere Volume", expression: "V = (4/3) × π × r³", variables: ["V", "r"], category: "geometry", description: "Volume of sphere" },
+    { name: "Sphere Surface Area", expression: "A = 4 × π × r²", variables: ["A", "r"], category: "geometry", description: "Surface area of sphere" },
     { name: "Cylinder Volume", expression: "V = π × r² × h", variables: ["V", "r", "h"], category: "geometry", description: "Volume of cylinder" },
+    { name: "Cylinder Surface Area", expression: "A = 2πr(r + h)", variables: ["A", "r", "h"], category: "geometry", description: "Total surface area of cylinder" },
+    { name: "Cone Volume", expression: "V = (1/3) × π × r² × h", variables: ["V", "r", "h"], category: "geometry", description: "Volume of cone" },
+    { name: "Cone Surface Area", expression: "A = πr(r + l)", variables: ["A", "r", "l"], category: "geometry", description: "Total surface area of cone (l = slant height)" },
+    { name: "Cone Slant Height", expression: "l = √(r² + h²)", variables: ["l", "r", "h"], category: "geometry", description: "Slant height of cone" },
+    { name: "Pyramid Volume", expression: "V = (1/3) × B × h", variables: ["V", "B", "h"], category: "geometry", description: "Volume of pyramid (B = base area)" },
     
     // Algebra Formulas
     { name: "Difference of Squares", expression: "a² - b² = (a + b)(a - b)", variables: ["a", "b"], category: "algebra", description: "Factoring difference of squares" },
