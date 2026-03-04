@@ -423,11 +423,134 @@
                 
                 <!-- Utility Tabs -->
                 <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="switchUtilityTab('fraction')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Fractions</button>
+                    <button onclick="switchUtilityTab('lcmhcf')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 LCM/HCF</button>
+                    <button onclick="switchUtilityTab('simultaneous')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📐 Equations</button>
+                    <button onclick="switchUtilityTab('logarithm')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📊 Logarithm</button>
+                    <button onclick="switchUtilityTab('vector')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">➡️ Vectors</button>
                     <button onclick="switchUtilityTab('unit')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Unit Converter</button>
                     <button onclick="switchUtilityTab('percentage')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Percentage</button>
                     <button onclick="switchUtilityTab('age')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Age Calculator</button>
                     <button onclick="switchUtilityTab('bmi')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">BMI Calculator</button>
                     <button onclick="switchUtilityTab('currency')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Currency Converter</button>
+                </div>
+
+                <!-- Fraction Calculator -->
+                <div id="fractionTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 Fraction Calculator</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-3 gap-2 items-center">
+                            <input type="number" id="frac1Num" placeholder="Numerator" class="input-field">
+                            <div class="text-center text-2xl text-gray-700 dark:text-gray-300">/</div>
+                            <input type="number" id="frac1Den" placeholder="Denominator" class="input-field">
+                        </div>
+                        <select id="fracOperation" class="input-field w-full">
+                            <option value="add">Add (+)</option>
+                            <option value="subtract">Subtract (−)</option>
+                            <option value="multiply">Multiply (×)</option>
+                            <option value="divide">Divide (÷)</option>
+                            <option value="simplify">Simplify</option>
+                        </select>
+                        <div class="grid grid-cols-3 gap-2 items-center" id="frac2Input">
+                            <input type="number" id="frac2Num" placeholder="Numerator" class="input-field">
+                            <div class="text-center text-2xl text-gray-700 dark:text-gray-300">/</div>
+                            <input type="number" id="frac2Den" placeholder="Denominator" class="input-field">
+                        </div>
+                        <button onclick="calculateFraction()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="fractionResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- LCM/HCF Calculator -->
+                <div id="lcmhcfTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 LCM & HCF Calculator</h3>
+                    <div class="space-y-4">
+                        <input type="number" id="lcmNum1" placeholder="First Number" class="input-field w-full">
+                        <input type="number" id="lcmNum2" placeholder="Second Number" class="input-field w-full">
+                        <input type="number" id="lcmNum3" placeholder="Third Number (optional)" class="input-field w-full">
+                        <button onclick="calculateLCMHCF()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate LCM & HCF</button>
+                        <div id="lcmhcfResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Simultaneous Equations Solver -->
+                <div id="simultaneousTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📐 Simultaneous Equations Solver</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Solve: a₁x + b₁y = c₁ and a₂x + b₂y = c₂</p>
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                            <p class="font-semibold mb-2 text-gray-800 dark:text-white">Equation 1:</p>
+                            <div class="grid grid-cols-5 gap-2 items-center">
+                                <input type="number" id="eq1a" placeholder="a₁" class="input-field">
+                                <span class="text-center text-gray-700 dark:text-gray-300">x +</span>
+                                <input type="number" id="eq1b" placeholder="b₁" class="input-field">
+                                <span class="text-center text-gray-700 dark:text-gray-300">y =</span>
+                                <input type="number" id="eq1c" placeholder="c₁" class="input-field">
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                            <p class="font-semibold mb-2 text-gray-800 dark:text-white">Equation 2:</p>
+                            <div class="grid grid-cols-5 gap-2 items-center">
+                                <input type="number" id="eq2a" placeholder="a₂" class="input-field">
+                                <span class="text-center text-gray-700 dark:text-gray-300">x +</span>
+                                <input type="number" id="eq2b" placeholder="b₂" class="input-field">
+                                <span class="text-center text-gray-700 dark:text-gray-300">y =</span>
+                                <input type="number" id="eq2c" placeholder="c₂" class="input-field">
+                            </div>
+                        </div>
+                        <button onclick="solveSimultaneous()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Solve</button>
+                        <div id="simultaneousResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Logarithm Calculator -->
+                <div id="logarithmTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📊 Logarithm Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="logType" class="input-field w-full">
+                            <option value="log10">log₁₀ (Common Logarithm)</option>
+                            <option value="ln">ln (Natural Logarithm)</option>
+                            <option value="log2">log₂ (Binary Logarithm)</option>
+                            <option value="custom">logₓ (Custom Base)</option>
+                        </select>
+                        <input type="number" id="logBase" placeholder="Base (for custom)" class="input-field w-full hidden">
+                        <input type="number" id="logValue" placeholder="Value" class="input-field w-full">
+                        <button onclick="calculateLogarithm()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="logarithmResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Vector Calculator -->
+                <div id="vectorTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">➡️ Vector Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="vectorOperation" class="input-field w-full">
+                            <option value="add">Add Vectors</option>
+                            <option value="subtract">Subtract Vectors</option>
+                            <option value="dot">Dot Product</option>
+                            <option value="cross">Cross Product (3D)</option>
+                            <option value="magnitude">Magnitude</option>
+                            <option value="angle">Angle Between Vectors</option>
+                        </select>
+                        <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                            <p class="font-semibold mb-2 text-gray-800 dark:text-white">Vector A:</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="number" id="vecAx" placeholder="x" class="input-field">
+                                <input type="number" id="vecAy" placeholder="y" class="input-field">
+                                <input type="number" id="vecAz" placeholder="z (3D)" class="input-field">
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-700 p-4 rounded-lg" id="vectorBInput">
+                            <p class="font-semibold mb-2 text-gray-800 dark:text-white">Vector B:</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="number" id="vecBx" placeholder="x" class="input-field">
+                                <input type="number" id="vecBy" placeholder="y" class="input-field">
+                                <input type="number" id="vecBz" placeholder="z (3D)" class="input-field">
+                            </div>
+                        </div>
+                        <button onclick="calculateVector()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="vectorResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
                 </div>
 
                 <!-- Unit Converter -->

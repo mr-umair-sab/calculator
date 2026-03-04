@@ -1445,3 +1445,340 @@ function filterFormulas() {
 function searchFormulas() {
     displayFormulaLibrary();
 }
+
+
+// ===== ADVANCED CALCULATOR FEATURES =====
+
+// 1. FRACTION CALCULATOR
+function calculateFraction() {
+    const num1 = parseFloat(document.getElementById('frac1Num').value);
+    const den1 = parseFloat(document.getElementById('frac1Den').value);
+    const operation = document.getElementById('fracOperation').value;
+    const resultDiv = document.getElementById('fractionResult');
+    
+    if (isNaN(num1) || isNaN(den1) || den1 === 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid fractions!</p>';
+        return;
+    }
+    
+    if (operation === 'simplify') {
+        const gcd = findGCD(Math.abs(num1), Math.abs(den1));
+        const simpNum = num1 / gcd;
+        const simpDen = den1 / gcd;
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-2">Simplified:</h4>
+            <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">${simpNum}/${simpDen}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Decimal: ${(simpNum/simpDen).toFixed(6)}</p>
+        `;
+        return;
+    }
+    
+    const num2 = parseFloat(document.getElementById('frac2Num').value);
+    const den2 = parseFloat(document.getElementById('frac2Den').value);
+    
+    if (isNaN(num2) || isNaN(den2) || den2 === 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter both fractions!</p>';
+        return;
+    }
+    
+    let resNum, resDen;
+    
+    switch(operation) {
+        case 'add':
+            resNum = num1 * den2 + num2 * den1;
+            resDen = den1 * den2;
+            break;
+        case 'subtract':
+            resNum = num1 * den2 - num2 * den1;
+            resDen = den1 * den2;
+            break;
+        case 'multiply':
+            resNum = num1 * num2;
+            resDen = den1 * den2;
+            break;
+        case 'divide':
+            resNum = num1 * den2;
+            resDen = den1 * num2;
+            break;
+    }
+    
+    const gcd = findGCD(Math.abs(resNum), Math.abs(resDen));
+    const simpNum = resNum / gcd;
+    const simpDen = resDen / gcd;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-2">Result:</h4>
+        <p class="text-2xl mb-2 text-gray-700 dark:text-gray-300">${num1}/${den1} ${getOperationSymbol(operation)} ${num2}/${den2}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">${simpNum}/${simpDen}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Decimal: ${(simpNum/simpDen).toFixed(6)}</p>
+    `;
+}
+
+function getOperationSymbol(op) {
+    const symbols = { add: '+', subtract: '−', multiply: '×', divide: '÷' };
+    return symbols[op] || op;
+}
+
+// 2. LCM/HCF CALCULATOR
+function calculateLCMHCF() {
+    const num1 = parseInt(document.getElementById('lcmNum1').value);
+    const num2 = parseInt(document.getElementById('lcmNum2').value);
+    const num3 = parseInt(document.getElementById('lcmNum3').value) || null;
+    const resultDiv = document.getElementById('lcmhcfResult');
+    
+    if (isNaN(num1) || isNaN(num2) || num1 <= 0 || num2 <= 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid positive integers!</p>';
+        return;
+    }
+    
+    let hcf, lcm;
+    
+    if (num3 && num3 > 0) {
+        hcf = findGCD(findGCD(num1, num2), num3);
+        lcm = findLCM(findLCM(num1, num2), num3);
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Results for ${num1}, ${num2}, ${num3}:</h4>
+            <div class="space-y-2">
+                <p class="text-xl"><span class="font-semibold">HCF (GCD):</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${hcf}</span></p>
+                <p class="text-xl"><span class="font-semibold">LCM:</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${lcm}</span></p>
+            </div>
+        `;
+    } else {
+        hcf = findGCD(num1, num2);
+        lcm = findLCM(num1, num2);
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Results for ${num1} and ${num2}:</h4>
+            <div class="space-y-2">
+                <p class="text-xl"><span class="font-semibold">HCF (GCD):</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${hcf}</span></p>
+                <p class="text-xl"><span class="font-semibold">LCM:</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${lcm}</span></p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Verification: ${num1} × ${num2} = ${num1*num2} = ${hcf} × ${lcm}</p>
+            </div>
+        `;
+    }
+}
+
+function findGCD(a, b) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b !== 0) {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+function findLCM(a, b) {
+    return Math.abs(a * b) / findGCD(a, b);
+}
+
+// 3. SIMULTANEOUS EQUATIONS SOLVER
+function solveSimultaneous() {
+    const a1 = parseFloat(document.getElementById('eq1a').value);
+    const b1 = parseFloat(document.getElementById('eq1b').value);
+    const c1 = parseFloat(document.getElementById('eq1c').value);
+    const a2 = parseFloat(document.getElementById('eq2a').value);
+    const b2 = parseFloat(document.getElementById('eq2b').value);
+    const c2 = parseFloat(document.getElementById('eq2c').value);
+    const resultDiv = document.getElementById('simultaneousResult');
+    
+    if ([a1, b1, c1, a2, b2, c2].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please fill all coefficients!</p>';
+        return;
+    }
+    
+    const determinant = a1 * b2 - a2 * b1;
+    
+    if (determinant === 0) {
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-2 text-orange-600">No Unique Solution!</h4>
+            <p class="text-gray-700 dark:text-gray-300">The equations are either parallel (no solution) or identical (infinite solutions).</p>
+        `;
+        return;
+    }
+    
+    const x = (c1 * b2 - c2 * b1) / determinant;
+    const y = (a1 * c2 - a2 * c1) / determinant;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Solution:</h4>
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-3">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Equation 1: ${a1}x + ${b1}y = ${c1}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Equation 2: ${a2}x + ${b2}y = ${c2}</p>
+        </div>
+        <div class="space-y-2">
+            <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">x = ${x.toFixed(4)}</p>
+            <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">y = ${y.toFixed(4)}</p>
+        </div>
+        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p class="font-semibold mb-1">Verification:</p>
+            <p>Eq1: ${a1}(${x.toFixed(2)}) + ${b1}(${y.toFixed(2)}) = ${(a1*x + b1*y).toFixed(2)} ≈ ${c1}</p>
+            <p>Eq2: ${a2}(${x.toFixed(2)}) + ${b2}(${y.toFixed(2)}) = ${(a2*x + b2*y).toFixed(2)} ≈ ${c2}</p>
+        </div>
+    `;
+}
+
+// 4. LOGARITHM CALCULATOR
+function calculateLogarithm() {
+    const logType = document.getElementById('logType').value;
+    const value = parseFloat(document.getElementById('logValue').value);
+    const resultDiv = document.getElementById('logarithmResult');
+    
+    if (isNaN(value) || value <= 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a positive number!</p>';
+        return;
+    }
+    
+    let result, base, formula;
+    
+    switch(logType) {
+        case 'log10':
+            result = Math.log10(value);
+            base = 10;
+            formula = `log₁₀(${value})`;
+            break;
+        case 'ln':
+            result = Math.log(value);
+            base = 'e';
+            formula = `ln(${value})`;
+            break;
+        case 'log2':
+            result = Math.log2(value);
+            base = 2;
+            formula = `log₂(${value})`;
+            break;
+        case 'custom':
+            const customBase = parseFloat(document.getElementById('logBase').value);
+            if (isNaN(customBase) || customBase <= 0 || customBase === 1) {
+                resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid base (> 0, ≠ 1)!</p>';
+                return;
+            }
+            result = Math.log(value) / Math.log(customBase);
+            base = customBase;
+            formula = `log₍${customBase}₎(${value})`;
+            break;
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Result:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${formula}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">${result.toFixed(8)}</p>
+        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p>Verification: ${base}^${result.toFixed(4)} ≈ ${Math.pow(base === 'e' ? Math.E : base, result).toFixed(4)}</p>
+        </div>
+    `;
+}
+
+// Show/hide custom base input
+document.getElementById('logType')?.addEventListener('change', function() {
+    const baseInput = document.getElementById('logBase');
+    if (this.value === 'custom') {
+        baseInput.classList.remove('hidden');
+    } else {
+        baseInput.classList.add('hidden');
+    }
+});
+
+// 5. VECTOR CALCULATOR
+function calculateVector() {
+    const operation = document.getElementById('vectorOperation').value;
+    const ax = parseFloat(document.getElementById('vecAx').value) || 0;
+    const ay = parseFloat(document.getElementById('vecAy').value) || 0;
+    const az = parseFloat(document.getElementById('vecAz').value) || 0;
+    const resultDiv = document.getElementById('vectorResult');
+    
+    if (operation === 'magnitude') {
+        const magnitude = Math.sqrt(ax*ax + ay*ay + az*az);
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Magnitude:</h4>
+            <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">Vector A = (${ax}, ${ay}, ${az})</p>
+            <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">|A| = ${magnitude.toFixed(6)}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Formula: √(x² + y² + z²)</p>
+        `;
+        return;
+    }
+    
+    const bx = parseFloat(document.getElementById('vecBx').value) || 0;
+    const by = parseFloat(document.getElementById('vecBy').value) || 0;
+    const bz = parseFloat(document.getElementById('vecBz').value) || 0;
+    
+    let result, resultText;
+    
+    switch(operation) {
+        case 'add':
+            result = { x: ax + bx, y: ay + by, z: az + bz };
+            resultText = `A + B = (${result.x}, ${result.y}, ${result.z})`;
+            break;
+        case 'subtract':
+            result = { x: ax - bx, y: ay - by, z: az - bz };
+            resultText = `A - B = (${result.x}, ${result.y}, ${result.z})`;
+            break;
+        case 'dot':
+            const dotProduct = ax*bx + ay*by + az*bz;
+            resultDiv.innerHTML = `
+                <h4 class="font-bold text-lg mb-3">Dot Product:</h4>
+                <p class="text-sm mb-2 text-gray-700 dark:text-gray-300">A = (${ax}, ${ay}, ${az})</p>
+                <p class="text-sm mb-3 text-gray-700 dark:text-gray-300">B = (${bx}, ${by}, ${bz})</p>
+                <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">A · B = ${dotProduct.toFixed(6)}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Formula: A·B = x₁x₂ + y₁y₂ + z₁z₂</p>
+            `;
+            return;
+        case 'cross':
+            const cx = ay*bz - az*by;
+            const cy = az*bx - ax*bz;
+            const cz = ax*by - ay*bx;
+            resultDiv.innerHTML = `
+                <h4 class="font-bold text-lg mb-3">Cross Product:</h4>
+                <p class="text-sm mb-2 text-gray-700 dark:text-gray-300">A = (${ax}, ${ay}, ${az})</p>
+                <p class="text-sm mb-3 text-gray-700 dark:text-gray-300">B = (${bx}, ${by}, ${bz})</p>
+                <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">A × B = (${cx.toFixed(4)}, ${cy.toFixed(4)}, ${cz.toFixed(4)})</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Magnitude: ${Math.sqrt(cx*cx + cy*cy + cz*cz).toFixed(6)}</p>
+            `;
+            return;
+        case 'angle':
+            const magA = Math.sqrt(ax*ax + ay*ay + az*az);
+            const magB = Math.sqrt(bx*bx + by*by + bz*bz);
+            const dotProd = ax*bx + ay*by + az*bz;
+            const cosTheta = dotProd / (magA * magB);
+            const angleRad = Math.acos(cosTheta);
+            const angleDeg = angleRad * 180 / Math.PI;
+            resultDiv.innerHTML = `
+                <h4 class="font-bold text-lg mb-3">Angle Between Vectors:</h4>
+                <p class="text-sm mb-2 text-gray-700 dark:text-gray-300">A = (${ax}, ${ay}, ${az})</p>
+                <p class="text-sm mb-3 text-gray-700 dark:text-gray-300">B = (${bx}, ${by}, ${bz})</p>
+                <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">θ = ${angleDeg.toFixed(4)}°</p>
+                <p class="text-xl text-pink-500 dark:text-pink-300">θ = ${angleRad.toFixed(6)} radians</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">cos θ = (A·B) / (|A||B|)</p>
+            `;
+            return;
+    }
+    
+    if (result) {
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Result:</h4>
+            <p class="text-sm mb-2 text-gray-700 dark:text-gray-300">A = (${ax}, ${ay}, ${az})</p>
+            <p class="text-sm mb-3 text-gray-700 dark:text-gray-300">B = (${bx}, ${by}, ${bz})</p>
+            <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">${resultText}</p>
+        `;
+    }
+}
+
+// Show/hide vector B input based on operation
+document.getElementById('vectorOperation')?.addEventListener('change', function() {
+    const vectorBInput = document.getElementById('vectorBInput');
+    if (this.value === 'magnitude') {
+        vectorBInput.classList.add('hidden');
+    } else {
+        vectorBInput.classList.remove('hidden');
+    }
+});
+
+// Show/hide fraction 2 input based on operation
+document.getElementById('fracOperation')?.addEventListener('change', function() {
+    const frac2Input = document.getElementById('frac2Input');
+    if (this.value === 'simplify') {
+        frac2Input.classList.add('hidden');
+    } else {
+        frac2Input.classList.remove('hidden');
+    }
+});
