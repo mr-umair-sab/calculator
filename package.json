@@ -28,6 +28,7 @@
   "scripts": {
     "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
     "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "postbuild": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
