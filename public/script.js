@@ -1054,15 +1054,53 @@ const formulaLibrary = [
     { name: "Cone Slant Height", expression: "l = √(r² + h²)", variables: ["l", "r", "h"], category: "geometry", description: "Slant height of cone" },
     { name: "Pyramid Volume", expression: "V = (1/3) × B × h", variables: ["V", "B", "h"], category: "geometry", description: "Volume of pyramid (B = base area)" },
     
+    // Trigonometry Formulas - Basic Identities
+    { name: "Pythagorean Identity", expression: "sin²θ + cos²θ = 1", variables: ["θ"], category: "trigonometry", description: "Fundamental trigonometric identity" },
+    { name: "Tan Identity", expression: "tan(θ) = sin(θ) / cos(θ)", variables: ["θ"], category: "trigonometry", description: "Tangent in terms of sine and cosine" },
+    { name: "Cot Identity", expression: "cot(θ) = cos(θ) / sin(θ)", variables: ["θ"], category: "trigonometry", description: "Cotangent identity" },
+    { name: "Sec Identity", expression: "sec(θ) = 1 / cos(θ)", variables: ["θ"], category: "trigonometry", description: "Secant identity" },
+    { name: "Cosec Identity", expression: "cosec(θ) = 1 / sin(θ)", variables: ["θ"], category: "trigonometry", description: "Cosecant identity" },
+    
+    // Trigonometry Formulas - Triangle Rules
+    { name: "Sine Rule", expression: "a/sin(A) = b/sin(B) = c/sin(C)", variables: ["a", "b", "c", "A", "B", "C"], category: "trigonometry", description: "Sine rule for any triangle" },
+    { name: "Cosine Rule", expression: "c² = a² + b² - 2ab×cos(C)", variables: ["a", "b", "c", "C"], category: "trigonometry", description: "Cosine rule for any triangle" },
+    { name: "Triangle Area (Trig)", expression: "A = 0.5 × a × b × sin(C)", variables: ["A", "a", "b", "C"], category: "trigonometry", description: "Area using two sides and included angle" },
+    
+    // Trigonometry Formulas - Double Angle
+    { name: "Sin Double Angle", expression: "sin(2θ) = 2×sin(θ)×cos(θ)", variables: ["θ"], category: "trigonometry", description: "Sine of double angle" },
+    { name: "Cos Double Angle", expression: "cos(2θ) = cos²(θ) - sin²(θ)", variables: ["θ"], category: "trigonometry", description: "Cosine of double angle" },
+    { name: "Tan Double Angle", expression: "tan(2θ) = 2×tan(θ) / (1 - tan²(θ))", variables: ["θ"], category: "trigonometry", description: "Tangent of double angle" },
+    
+    // Trigonometry Formulas - Sum & Difference
+    { name: "Sin Sum", expression: "sin(A + B) = sin(A)×cos(B) + cos(A)×sin(B)", variables: ["A", "B"], category: "trigonometry", description: "Sine of sum of angles" },
+    { name: "Cos Sum", expression: "cos(A + B) = cos(A)×cos(B) - sin(A)×sin(B)", variables: ["A", "B"], category: "trigonometry", description: "Cosine of sum of angles" },
+    { name: "Sin Difference", expression: "sin(A - B) = sin(A)×cos(B) - cos(A)×sin(B)", variables: ["A", "B"], category: "trigonometry", description: "Sine of difference of angles" },
+    { name: "Cos Difference", expression: "cos(A - B) = cos(A)×cos(B) + sin(A)×sin(B)", variables: ["A", "B"], category: "trigonometry", description: "Cosine of difference of angles" },
+    
     // Algebra Formulas
     { name: "Difference of Squares", expression: "a² - b² = (a + b)(a - b)", variables: ["a", "b"], category: "algebra", description: "Factoring difference of squares" },
     { name: "Perfect Square", expression: "(a + b)² = a² + 2ab + b²", variables: ["a", "b"], category: "algebra", description: "Expanding perfect square" },
+    { name: "Perfect Square Difference", expression: "(a - b)² = a² - 2ab + b²", variables: ["a", "b"], category: "algebra", description: "Expanding (a-b)²" },
+    { name: "Sum of Cubes", expression: "a³ + b³ = (a + b)(a² - ab + b²)", variables: ["a", "b"], category: "algebra", description: "Factoring sum of cubes" },
+    { name: "Difference of Cubes", expression: "a³ - b³ = (a - b)(a² + ab + b²)", variables: ["a", "b"], category: "algebra", description: "Factoring difference of cubes" },
     { name: "Sum of Arithmetic Series", expression: "S = n/2 × (a + l)", variables: ["S", "n", "a", "l"], category: "algebra", description: "Sum of arithmetic progression" },
+    { name: "Arithmetic nth Term", expression: "aₙ = a + (n-1)×d", variables: ["a", "n", "d"], category: "algebra", description: "nth term of AP (d = common difference)" },
+    { name: "Geometric nth Term", expression: "aₙ = a × r^(n-1)", variables: ["a", "r", "n"], category: "algebra", description: "nth term of GP (r = common ratio)" },
+    { name: "Sum of Geometric Series", expression: "S = a(r^n - 1) / (r - 1)", variables: ["a", "r", "n"], category: "algebra", description: "Sum of GP when r ≠ 1" },
     
-    // Chemistry Formulas
-    { name: "Ideal Gas Law", expression: "PV = nRT", variables: ["P", "V", "n", "R", "T"], category: "chemistry", description: "Ideal gas equation" },
-    { name: "Molarity", expression: "M = n / V", variables: ["M", "n", "V"], category: "chemistry", description: "Molar concentration" },
+    // Chemistry Formulas - Basic
+    { name: "Ideal Gas Law", expression: "PV = nRT", variables: ["P", "V", "n", "R", "T"], category: "chemistry", description: "Ideal gas equation (R = 8.314 J/mol·K)" },
+    { name: "Molarity", expression: "M = n / V", variables: ["M", "n", "V"], category: "chemistry", description: "Molar concentration (mol/L)" },
+    { name: "Molality", expression: "m = n / W", variables: ["m", "n", "W"], category: "chemistry", description: "Molality (mol/kg of solvent)" },
+    { name: "Mole Concept", expression: "n = m / M", variables: ["n", "m", "M"], category: "chemistry", description: "Moles = mass / molar mass" },
+    { name: "Avogadro Number", expression: "N = n × Nₐ", variables: ["N", "n"], category: "chemistry", description: "Number of particles (Nₐ = 6.022×10²³)" },
+    { name: "Dilution Formula", expression: "M₁V₁ = M₂V₂", variables: ["M1", "V1", "M2", "V2"], category: "chemistry", description: "Dilution equation" },
     { name: "pH Formula", expression: "pH = -log[H⁺]", variables: ["H"], category: "chemistry", description: "pH calculation" },
+    { name: "pOH Formula", expression: "pOH = -log[OH⁻]", variables: ["OH"], category: "chemistry", description: "pOH calculation" },
+    { name: "pH + pOH", expression: "pH + pOH = 14", variables: ["pH", "pOH"], category: "chemistry", description: "Relationship at 25°C" },
+    { name: "Density", expression: "d = m / V", variables: ["d", "m", "V"], category: "chemistry", description: "Density = mass / volume" },
+    { name: "Percent Composition", expression: "% = (mass of element / total mass) × 100", variables: ["mass"], category: "chemistry", description: "Percentage by mass" },
+    { name: "Empirical Formula Mass", expression: "n = Molecular Mass / Empirical Mass", variables: ["n"], category: "chemistry", description: "Ratio for molecular formula" },
 ];
 
 // User's saved formulas (loaded from localStorage)
@@ -1120,6 +1158,7 @@ function displayFormulaLibrary() {
         const categoryColors = {
             physics: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
             math: 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200',
+            trigonometry: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
             chemistry: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
             geometry: 'bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200',
             algebra: 'bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200'
@@ -1165,6 +1204,7 @@ function displaySavedFormulas() {
         const categoryColors = {
             physics: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
             math: 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200',
+            trigonometry: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
             chemistry: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
             geometry: 'bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200',
             algebra: 'bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200',
