@@ -220,6 +220,85 @@ function copyResult() {
     });
 }
 
+// ===== SHARE FUNCTIONALITY =====
+
+// Toggle Share Menu
+function toggleShareMenu() {
+    const menu = document.getElementById('shareMenu');
+    const overlay = document.getElementById('shareOverlay');
+    
+    if (menu.classList.contains('hidden')) {
+        // Get current result
+        let resultText = 'No result';
+        if (currentDisplay && currentDisplay.value !== '0' && currentDisplay.value !== 'Error') {
+            resultText = currentDisplay.value;
+        }
+        
+        // Update share text
+        document.getElementById('shareResultText').textContent = resultText;
+        
+        // Show menu
+        menu.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+    } else {
+        // Hide menu
+        menu.classList.add('hidden');
+        overlay.classList.add('hidden');
+    }
+}
+
+// Share via WhatsApp
+function shareViaWhatsApp() {
+    const result = document.getElementById('shareResultText').textContent;
+    const message = `🧮 Smart Calculator Result:\n\n${result}\n\nCalculate yours at: ${window.location.href}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+// Share via Email
+function shareViaEmail() {
+    const result = document.getElementById('shareResultText').textContent;
+    const subject = 'Smart Calculator Result';
+    const body = `Hi,\n\nI calculated this using Smart Calculator:\n\nResult: ${result}\n\nYou can use it too at: ${window.location.href}\n\nBest regards`;
+    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+}
+
+// Share via Twitter
+function shareViaTwitter() {
+    const result = document.getElementById('shareResultText').textContent;
+    const message = `Just calculated ${result} using Smart Calculator! 🧮\n\nTry it yourself:`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(twitterUrl, '_blank');
+}
+
+// Share via Facebook
+function shareViaFacebook() {
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(facebookUrl, '_blank');
+}
+
+// Copy Share Link
+function copyShareLink() {
+    const result = document.getElementById('shareResultText').textContent;
+    const shareText = `Smart Calculator Result: ${result}\n\nCalculate yours at: ${window.location.href}`;
+    
+    navigator.clipboard.writeText(shareText).then(() => {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<span class="text-2xl">✓</span><span>Copied!</span>';
+        btn.className = 'w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.className = 'w-full bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2';
+        }, 2000);
+    }).catch(() => {
+        alert('Failed to copy link!');
+    });
+}
+
 // Mode Switching
 function switchMode(mode) {
     currentMode = mode;
