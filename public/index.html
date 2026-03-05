@@ -428,6 +428,11 @@
                     <button onclick="switchUtilityTab('simultaneous')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📐 Equations</button>
                     <button onclick="switchUtilityTab('logarithm')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📊 Logarithm</button>
                     <button onclick="switchUtilityTab('vector')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">➡️ Vectors</button>
+                    <button onclick="switchUtilityTab('prime')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Prime Tools</button>
+                    <button onclick="switchUtilityTab('sequence')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📈 Sequences</button>
+                    <button onclick="switchUtilityTab('decfrac')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔄 Dec↔Frac</button>
+                    <button onclick="switchUtilityTab('matrix3')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Matrix 3×3</button>
+                    <button onclick="switchUtilityTab('complex')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Complex</button>
                     <button onclick="switchUtilityTab('unit')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Unit Converter</button>
                     <button onclick="switchUtilityTab('percentage')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Percentage</button>
                     <button onclick="switchUtilityTab('age')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Age Calculator</button>
@@ -517,6 +522,89 @@
                         <input type="number" id="logValue" placeholder="Value" class="input-field w-full">
                         <button onclick="calculateLogarithm()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
                         <div id="logarithmResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Prime Number Tools -->
+                <div id="primeTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 Prime Number Tools</h3>
+                    <div class="space-y-4">
+                        <select id="primeOperation" class="input-field w-full">
+                            <option value="check">Check if Prime</option>
+                            <option value="factorize">Prime Factorization</option>
+                            <option value="list">List Primes up to N</option>
+                            <option value="nth">Find Nth Prime</option>
+                        </select>
+                        <input type="number" id="primeInput" placeholder="Enter number" class="input-field w-full">
+                        <button onclick="calculatePrime()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="primeResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Sequence & Series Calculator -->
+                <div id="sequenceTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📈 Sequence & Series Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="sequenceType" onchange="updateSequenceInputs()" class="input-field w-full">
+                            <option value="ap">Arithmetic Progression (AP)</option>
+                            <option value="gp">Geometric Progression (GP)</option>
+                            <option value="sum_n">Sum of First N Natural Numbers</option>
+                            <option value="sum_squares">Sum of Squares (1² + 2² + ... + n²)</option>
+                            <option value="sum_cubes">Sum of Cubes (1³ + 2³ + ... + n³)</option>
+                        </select>
+                        <div id="sequenceInputs"></div>
+                        <button onclick="calculateSequence()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="sequenceResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Decimal to Fraction Converter -->
+                <div id="decfracTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔄 Decimal ↔ Fraction Converter</h3>
+                    <div class="space-y-4">
+                        <select id="conversionType" onchange="updateConversionInputs()" class="input-field w-full">
+                            <option value="dec2frac">Decimal to Fraction</option>
+                            <option value="frac2dec">Fraction to Decimal</option>
+                        </select>
+                        <div id="conversionInputs"></div>
+                        <button onclick="convertDecimalFraction()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
+                        <div id="conversionResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Matrix 3×3 Calculator -->
+                <div id="matrix3Tab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 Matrix 3×3 Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="matrix3Operation" onchange="updateMatrix3Inputs()" class="input-field w-full">
+                            <option value="add">Addition</option>
+                            <option value="subtract">Subtraction</option>
+                            <option value="multiply">Multiplication</option>
+                            <option value="determinant">Determinant</option>
+                            <option value="transpose">Transpose</option>
+                        </select>
+                        <div id="matrix3Inputs"></div>
+                        <button onclick="calculateMatrix3()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="matrix3Result" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Complex Numbers Calculator -->
+                <div id="complexTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 Complex Numbers Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="complexOperation" onchange="updateComplexInputs()" class="input-field w-full">
+                            <option value="add">Addition</option>
+                            <option value="subtract">Subtraction</option>
+                            <option value="multiply">Multiplication</option>
+                            <option value="divide">Division</option>
+                            <option value="conjugate">Conjugate</option>
+                            <option value="modulus">Modulus</option>
+                            <option value="polar">Convert to Polar Form</option>
+                        </select>
+                        <div id="complexInputs"></div>
+                        <button onclick="calculateComplex()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="complexResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                     </div>
                 </div>
 

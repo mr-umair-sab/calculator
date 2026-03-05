@@ -1782,3 +1782,712 @@ document.getElementById('fracOperation')?.addEventListener('change', function() 
         frac2Input.classList.remove('hidden');
     }
 });
+
+// ===== PHASE 1 - NEW FEATURES =====
+
+// 1. PRIME NUMBER TOOLS
+function calculatePrime() {
+    const operation = document.getElementById('primeOperation').value;
+    const num = parseInt(document.getElementById('primeInput').value);
+    const resultDiv = document.getElementById('primeResult');
+    
+    if (isNaN(num) || num < 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid positive number!</p>';
+        return;
+    }
+    
+    switch(operation) {
+        case 'check':
+            checkPrime(num, resultDiv);
+            break;
+        case 'factorize':
+            primeFactorization(num, resultDiv);
+            break;
+        case 'list':
+            listPrimes(num, resultDiv);
+            break;
+        case 'nth':
+            findNthPrime(num, resultDiv);
+            break;
+    }
+}
+
+function isPrime(n) {
+    if (n < 2) return false;
+    if (n === 2) return true;
+    if (n % 2 === 0) return false;
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        if (n % i === 0) return false;
+    }
+    return true;
+}
+
+function checkPrime(num, resultDiv) {
+    const prime = isPrime(num);
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Result:</h4>
+        <p class="text-2xl font-bold ${prime ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+            ${num} is ${prime ? '' : 'NOT '}a Prime Number
+        </p>
+        ${prime ? '<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">✓ Only divisible by 1 and itself</p>' : ''}
+    `;
+}
+
+function primeFactorization(num, resultDiv) {
+    if (num < 2) {
+        resultDiv.innerHTML = '<p class="text-red-500">Number must be ≥ 2 for factorization!</p>';
+        return;
+    }
+    
+    const factors = [];
+    let n = num;
+    
+    for (let i = 2; i <= n; i++) {
+        while (n % i === 0) {
+            factors.push(i);
+            n /= i;
+        }
+    }
+    
+    const factorCount = {};
+    factors.forEach(f => factorCount[f] = (factorCount[f] || 0) + 1);
+    
+    let factorStr = factors.join(' × ');
+    let powerStr = Object.keys(factorCount).map(f => 
+        factorCount[f] > 1 ? `${f}^${factorCount[f]}` : f
+    ).join(' × ');
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Prime Factorization of ${num}:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${num} = ${factorStr}</p>
+        <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">${num} = ${powerStr}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Prime factors: ${[...new Set(factors)].join(', ')}</p>
+    `;
+}
+
+function listPrimes(limit, resultDiv) {
+    if (limit > 10000) {
+        resultDiv.innerHTML = '<p class="text-orange-500">Please enter a number ≤ 10,000 for performance!</p>';
+        return;
+    }
+    
+    const primes = [];
+    for (let i = 2; i <= limit; i++) {
+        if (isPrime(i)) primes.push(i);
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Prime Numbers up to ${limit}:</h4>
+        <p class="text-xl font-bold text-pink-600 dark:text-pink-400 mb-3">Count: ${primes.length} primes</p>
+        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded max-h-64 overflow-y-auto">
+            <p class="text-sm text-gray-700 dark:text-gray-300">${primes.join(', ')}</p>
+        </div>
+    `;
+}
+
+function findNthPrime(n, resultDiv) {
+    if (n > 10000) {
+        resultDiv.innerHTML = '<p class="text-orange-500">Please enter N ≤ 10,000 for performance!</p>';
+        return;
+    }
+    
+    let count = 0;
+    let num = 2;
+    
+    while (count < n) {
+        if (isPrime(num)) count++;
+        if (count < n) num++;
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Result:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">The ${n}${getOrdinalSuffix(n)} prime number is:</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${num}</p>
+    `;
+}
+
+function getOrdinalSuffix(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+// 2. SEQUENCE & SERIES CALCULATOR
+function updateSequenceInputs() {
+    const type = document.getElementById('sequenceType').value;
+    const container = document.getElementById('sequenceInputs');
+    
+    let html = '';
+    
+    if (type === 'ap') {
+        html = `
+            <input type="number" id="apFirst" placeholder="First term (a)" class="input-field w-full">
+            <input type="number" id="apDiff" placeholder="Common difference (d)" class="input-field w-full">
+            <input type="number" id="apN" placeholder="Number of terms (n)" class="input-field w-full">
+        `;
+    } else if (type === 'gp') {
+        html = `
+            <input type="number" id="gpFirst" placeholder="First term (a)" class="input-field w-full">
+            <input type="number" id="gpRatio" placeholder="Common ratio (r)" class="input-field w-full">
+            <input type="number" id="gpN" placeholder="Number of terms (n)" class="input-field w-full">
+        `;
+    } else {
+        html = `<input type="number" id="sumN" placeholder="Enter N" class="input-field w-full">`;
+    }
+    
+    container.innerHTML = html;
+}
+
+function calculateSequence() {
+    const type = document.getElementById('sequenceType').value;
+    const resultDiv = document.getElementById('sequenceResult');
+    
+    switch(type) {
+        case 'ap':
+            calculateAP(resultDiv);
+            break;
+        case 'gp':
+            calculateGP(resultDiv);
+            break;
+        case 'sum_n':
+            calculateSumN(resultDiv);
+            break;
+        case 'sum_squares':
+            calculateSumSquares(resultDiv);
+            break;
+        case 'sum_cubes':
+            calculateSumCubes(resultDiv);
+            break;
+    }
+}
+
+function calculateAP(resultDiv) {
+    const a = parseFloat(document.getElementById('apFirst').value);
+    const d = parseFloat(document.getElementById('apDiff').value);
+    const n = parseInt(document.getElementById('apN').value);
+    
+    if (isNaN(a) || isNaN(d) || isNaN(n) || n < 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid values!</p>';
+        return;
+    }
+    
+    const nthTerm = a + (n - 1) * d;
+    const sum = (n / 2) * (2 * a + (n - 1) * d);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Arithmetic Progression (AP):</h4>
+        <div class="space-y-2">
+            <p class="text-gray-700 dark:text-gray-300">First term (a) = ${a}</p>
+            <p class="text-gray-700 dark:text-gray-300">Common difference (d) = ${d}</p>
+            <p class="text-gray-700 dark:text-gray-300">Number of terms (n) = ${n}</p>
+        </div>
+        <hr class="my-3 border-gray-300 dark:border-gray-600">
+        <div class="space-y-2">
+            <p class="text-xl"><span class="font-semibold">nth term:</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${nthTerm}</span></p>
+            <p class="text-xl"><span class="font-semibold">Sum of ${n} terms:</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${sum}</span></p>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: aₙ = a + (n-1)d, Sₙ = n/2 × (2a + (n-1)d)</p>
+    `;
+}
+
+function calculateGP(resultDiv) {
+    const a = parseFloat(document.getElementById('gpFirst').value);
+    const r = parseFloat(document.getElementById('gpRatio').value);
+    const n = parseInt(document.getElementById('gpN').value);
+    
+    if (isNaN(a) || isNaN(r) || isNaN(n) || n < 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid values!</p>';
+        return;
+    }
+    
+    const nthTerm = a * Math.pow(r, n - 1);
+    const sum = r === 1 ? a * n : a * (Math.pow(r, n) - 1) / (r - 1);
+    
+    let infiniteSum = '';
+    if (Math.abs(r) < 1) {
+        const sumInf = a / (1 - r);
+        infiniteSum = `<p class="text-xl"><span class="font-semibold">Sum to infinity:</span> <span class="text-green-600 dark:text-green-400 font-bold">${sumInf.toFixed(6)}</span></p>`;
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Geometric Progression (GP):</h4>
+        <div class="space-y-2">
+            <p class="text-gray-700 dark:text-gray-300">First term (a) = ${a}</p>
+            <p class="text-gray-700 dark:text-gray-300">Common ratio (r) = ${r}</p>
+            <p class="text-gray-700 dark:text-gray-300">Number of terms (n) = ${n}</p>
+        </div>
+        <hr class="my-3 border-gray-300 dark:border-gray-600">
+        <div class="space-y-2">
+            <p class="text-xl"><span class="font-semibold">nth term:</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${nthTerm.toFixed(6)}</span></p>
+            <p class="text-xl"><span class="font-semibold">Sum of ${n} terms:</span> <span class="text-pink-600 dark:text-pink-400 font-bold">${sum.toFixed(6)}</span></p>
+            ${infiniteSum}
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: aₙ = a×r^(n-1), Sₙ = a(r^n - 1)/(r - 1)</p>
+    `;
+}
+
+function calculateSumN(resultDiv) {
+    const n = parseInt(document.getElementById('sumN').value);
+    
+    if (isNaN(n) || n < 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid positive number!</p>';
+        return;
+    }
+    
+    const sum = (n * (n + 1)) / 2;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Sum of First ${n} Natural Numbers:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">1 + 2 + 3 + ... + ${n}</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${sum}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: n(n+1)/2</p>
+    `;
+}
+
+function calculateSumSquares(resultDiv) {
+    const n = parseInt(document.getElementById('sumN').value);
+    
+    if (isNaN(n) || n < 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid positive number!</p>';
+        return;
+    }
+    
+    const sum = (n * (n + 1) * (2 * n + 1)) / 6;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Sum of Squares:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">1² + 2² + 3² + ... + ${n}²</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${sum}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: n(n+1)(2n+1)/6</p>
+    `;
+}
+
+function calculateSumCubes(resultDiv) {
+    const n = parseInt(document.getElementById('sumN').value);
+    
+    if (isNaN(n) || n < 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid positive number!</p>';
+        return;
+    }
+    
+    const sum = Math.pow((n * (n + 1)) / 2, 2);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Sum of Cubes:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">1³ + 2³ + 3³ + ... + ${n}³</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${sum}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: [n(n+1)/2]²</p>
+    `;
+}
+
+// Initialize sequence inputs on load
+window.addEventListener('load', () => {
+    updateSequenceInputs();
+    updateConversionInputs();
+    updateMatrix3Inputs();
+    updateComplexInputs();
+});
+// 3. DECIMAL ↔ FRACTION CONVERTER
+function updateConversionInputs() {
+    const type = document.getElementById('conversionType')?.value;
+    const container = document.getElementById('conversionInputs');
+    
+    if (!container) return;
+    
+    let html = '';
+    
+    if (type === 'dec2frac') {
+        html = `<input type="number" step="any" id="decimalInput" placeholder="Enter decimal (e.g., 0.75)" class="input-field w-full">`;
+    } else {
+        html = `
+            <div class="grid grid-cols-3 gap-2 items-center">
+                <input type="number" id="fracNumInput" placeholder="Numerator" class="input-field">
+                <div class="text-center text-2xl text-gray-700 dark:text-gray-300">/</div>
+                <input type="number" id="fracDenInput" placeholder="Denominator" class="input-field">
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function convertDecimalFraction() {
+    const type = document.getElementById('conversionType').value;
+    const resultDiv = document.getElementById('conversionResult');
+    
+    if (type === 'dec2frac') {
+        decimalToFraction(resultDiv);
+    } else {
+        fractionToDecimal(resultDiv);
+    }
+}
+
+function decimalToFraction(resultDiv) {
+    const decimal = parseFloat(document.getElementById('decimalInput').value);
+    
+    if (isNaN(decimal)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid decimal!</p>';
+        return;
+    }
+    
+    // Handle negative numbers
+    const sign = decimal < 0 ? -1 : 1;
+    const absDecimal = Math.abs(decimal);
+    
+    // Convert to fraction
+    const tolerance = 1.0E-9;
+    let numerator = 1;
+    let denominator = 1;
+    let fraction = numerator / denominator;
+    
+    // Simple algorithm for decimal to fraction
+    const decimalStr = absDecimal.toString();
+    const decimalPlaces = decimalStr.includes('.') ? decimalStr.split('.')[1].length : 0;
+    
+    numerator = Math.round(absDecimal * Math.pow(10, decimalPlaces));
+    denominator = Math.pow(10, decimalPlaces);
+    
+    // Simplify
+    const gcd = findGCD(numerator, denominator);
+    numerator = (numerator / gcd) * sign;
+    denominator = denominator / gcd;
+    
+    // Check for mixed number
+    let mixedNumber = '';
+    if (Math.abs(numerator) > denominator) {
+        const whole = Math.floor(Math.abs(numerator) / denominator) * sign;
+        const remainder = Math.abs(numerator) % denominator;
+        if (remainder !== 0) {
+            mixedNumber = `<p class="text-xl"><span class="font-semibold">Mixed Number:</span> <span class="text-green-600 dark:text-green-400 font-bold">${whole} ${remainder}/${denominator}</span></p>`;
+        }
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Conversion Result:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">Decimal: ${decimal}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-2">${numerator}/${denominator}</p>
+        ${mixedNumber}
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Simplified fraction</p>
+    `;
+}
+
+function fractionToDecimal(resultDiv) {
+    const num = parseFloat(document.getElementById('fracNumInput').value);
+    const den = parseFloat(document.getElementById('fracDenInput').value);
+    
+    if (isNaN(num) || isNaN(den) || den === 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a valid fraction!</p>';
+        return;
+    }
+    
+    const decimal = num / den;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Conversion Result:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">Fraction: ${num}/${den}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">${decimal}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Decimal value</p>
+    `;
+}
+
+// 4. MATRIX 3×3 CALCULATOR
+function updateMatrix3Inputs() {
+    const operation = document.getElementById('matrix3Operation')?.value;
+    const container = document.getElementById('matrix3Inputs');
+    
+    if (!container) return;
+    
+    let html = '';
+    
+    if (operation === 'determinant' || operation === 'transpose') {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Matrix A (3×3):</p>
+                <div class="grid grid-cols-3 gap-2">
+                    ${[1,2,3,4,5,6,7,8,9].map(i => `<input type="number" id="m3a${i}" placeholder="${i}" class="input-field">`).join('')}
+                </div>
+            </div>
+        `;
+    } else {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg mb-3">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Matrix A (3×3):</p>
+                <div class="grid grid-cols-3 gap-2">
+                    ${[1,2,3,4,5,6,7,8,9].map(i => `<input type="number" id="m3a${i}" placeholder="${i}" class="input-field">`).join('')}
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Matrix B (3×3):</p>
+                <div class="grid grid-cols-3 gap-2">
+                    ${[1,2,3,4,5,6,7,8,9].map(i => `<input type="number" id="m3b${i}" placeholder="${i}" class="input-field">`).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function calculateMatrix3() {
+    const operation = document.getElementById('matrix3Operation').value;
+    const resultDiv = document.getElementById('matrix3Result');
+    
+    // Get Matrix A
+    const matrixA = [];
+    for (let i = 0; i < 3; i++) {
+        matrixA[i] = [];
+        for (let j = 0; j < 3; j++) {
+            const val = parseFloat(document.getElementById(`m3a${i*3 + j + 1}`).value) || 0;
+            matrixA[i][j] = val;
+        }
+    }
+    
+    switch(operation) {
+        case 'add':
+        case 'subtract':
+        case 'multiply':
+            const matrixB = [];
+            for (let i = 0; i < 3; i++) {
+                matrixB[i] = [];
+                for (let j = 0; j < 3; j++) {
+                    const val = parseFloat(document.getElementById(`m3b${i*3 + j + 1}`).value) || 0;
+                    matrixB[i][j] = val;
+                }
+            }
+            performMatrix3Operation(matrixA, matrixB, operation, resultDiv);
+            break;
+        case 'determinant':
+            calculateDeterminant3(matrixA, resultDiv);
+            break;
+        case 'transpose':
+            transposeMatrix3(matrixA, resultDiv);
+            break;
+    }
+}
+
+function performMatrix3Operation(A, B, operation, resultDiv) {
+    let result = [[0,0,0],[0,0,0],[0,0,0]];
+    let opSymbol = '';
+    
+    if (operation === 'add') {
+        opSymbol = '+';
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                result[i][j] = A[i][j] + B[i][j];
+            }
+        }
+    } else if (operation === 'subtract') {
+        opSymbol = '−';
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                result[i][j] = A[i][j] - B[i][j];
+            }
+        }
+    } else if (operation === 'multiply') {
+        opSymbol = '×';
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                result[i][j] = 0;
+                for (let k = 0; k < 3; k++) {
+                    result[i][j] += A[i][k] * B[k][j];
+                }
+            }
+        }
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Result (A ${opSymbol} B):</h4>
+        ${displayMatrix(result)}
+    `;
+}
+
+function calculateDeterminant3(matrix, resultDiv) {
+    const det = 
+        matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
+        matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
+        matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Matrix:</h4>
+        ${displayMatrix(matrix)}
+        <h4 class="font-bold text-lg mt-4 mb-2">Determinant:</h4>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${det.toFixed(4)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">det(A) = ${det.toFixed(6)}</p>
+    `;
+}
+
+function transposeMatrix3(matrix, resultDiv) {
+    const transpose = [[0,0,0],[0,0,0],[0,0,0]];
+    
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            transpose[j][i] = matrix[i][j];
+        }
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Original Matrix:</h4>
+        ${displayMatrix(matrix)}
+        <h4 class="font-bold text-lg mt-4 mb-3">Transpose (Aᵀ):</h4>
+        ${displayMatrix(transpose)}
+    `;
+}
+
+function displayMatrix(matrix) {
+    let html = '<div class="flex justify-center"><div class="grid grid-cols-3 gap-2 text-center">';
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            html += `<div class="bg-blue-100 dark:bg-blue-900 p-3 rounded font-bold text-lg text-gray-800 dark:text-white">${matrix[i][j].toFixed(2)}</div>`;
+        }
+    }
+    html += '</div></div>';
+    return html;
+}
+
+// 5. COMPLEX NUMBERS CALCULATOR
+function updateComplexInputs() {
+    const operation = document.getElementById('complexOperation')?.value;
+    const container = document.getElementById('complexInputs');
+    
+    if (!container) return;
+    
+    let html = '';
+    
+    if (operation === 'conjugate' || operation === 'modulus' || operation === 'polar') {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Complex Number (a + bi):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="cReal1" placeholder="Real part (a)" class="input-field">
+                    <input type="number" step="any" id="cImag1" placeholder="Imaginary part (b)" class="input-field">
+                </div>
+            </div>
+        `;
+    } else {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg mb-3">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">First Complex Number (a + bi):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="cReal1" placeholder="Real part (a)" class="input-field">
+                    <input type="number" step="any" id="cImag1" placeholder="Imaginary part (b)" class="input-field">
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Second Complex Number (c + di):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="cReal2" placeholder="Real part (c)" class="input-field">
+                    <input type="number" step="any" id="cImag2" placeholder="Imaginary part (d)" class="input-field">
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function calculateComplex() {
+    const operation = document.getElementById('complexOperation').value;
+    const resultDiv = document.getElementById('complexResult');
+    
+    const a = parseFloat(document.getElementById('cReal1').value) || 0;
+    const b = parseFloat(document.getElementById('cImag1').value) || 0;
+    
+    switch(operation) {
+        case 'conjugate':
+            complexConjugate(a, b, resultDiv);
+            break;
+        case 'modulus':
+            complexModulus(a, b, resultDiv);
+            break;
+        case 'polar':
+            complexToPolar(a, b, resultDiv);
+            break;
+        default:
+            const c = parseFloat(document.getElementById('cReal2').value) || 0;
+            const d = parseFloat(document.getElementById('cImag2').value) || 0;
+            performComplexOperation(a, b, c, d, operation, resultDiv);
+    }
+}
+
+function formatComplex(real, imag) {
+    if (imag === 0) return `${real}`;
+    if (real === 0) return `${imag}i`;
+    const sign = imag >= 0 ? '+' : '';
+    return `${real} ${sign} ${imag}i`;
+}
+
+function performComplexOperation(a, b, c, d, operation, resultDiv) {
+    let resultReal, resultImag, opSymbol;
+    
+    switch(operation) {
+        case 'add':
+            resultReal = a + c;
+            resultImag = b + d;
+            opSymbol = '+';
+            break;
+        case 'subtract':
+            resultReal = a - c;
+            resultImag = b - d;
+            opSymbol = '−';
+            break;
+        case 'multiply':
+            resultReal = a * c - b * d;
+            resultImag = a * d + b * c;
+            opSymbol = '×';
+            break;
+        case 'divide':
+            const denominator = c * c + d * d;
+            if (denominator === 0) {
+                resultDiv.innerHTML = '<p class="text-red-500">Cannot divide by zero!</p>';
+                return;
+            }
+            resultReal = (a * c + b * d) / denominator;
+            resultImag = (b * c - a * d) / denominator;
+            opSymbol = '÷';
+            break;
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Result:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">(${formatComplex(a, b)}) ${opSymbol} (${formatComplex(c, d)})</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">${formatComplex(resultReal.toFixed(4), resultImag.toFixed(4))}</p>
+    `;
+}
+
+function complexConjugate(a, b, resultDiv) {
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Conjugate:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">z = ${formatComplex(a, b)}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">z̄ = ${formatComplex(a, -b)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Conjugate changes the sign of imaginary part</p>
+    `;
+}
+
+function complexModulus(a, b, resultDiv) {
+    const modulus = Math.sqrt(a * a + b * b);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Modulus:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">z = ${formatComplex(a, b)}</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">|z| = ${modulus.toFixed(6)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: |z| = √(a² + b²)</p>
+    `;
+}
+
+function complexToPolar(a, b, resultDiv) {
+    const r = Math.sqrt(a * a + b * b);
+    let theta = Math.atan2(b, a);
+    const thetaDeg = theta * 180 / Math.PI;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Polar Form:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Rectangular: z = ${formatComplex(a, b)}</p>
+        <div class="space-y-2 mt-3">
+            <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">r = ${r.toFixed(6)}</p>
+            <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">θ = ${thetaDeg.toFixed(4)}° = ${theta.toFixed(6)} rad</p>
+            <p class="text-xl text-green-600 dark:text-green-400 mt-3">z = ${r.toFixed(4)} ∠ ${thetaDeg.toFixed(2)}°</p>
+            <p class="text-xl text-blue-600 dark:text-blue-400">z = ${r.toFixed(4)} e^(i${theta.toFixed(4)})</p>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">r = |z|, θ = arg(z) = tan⁻¹(b/a)</p>
+    `;
+}
