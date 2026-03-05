@@ -433,6 +433,10 @@
                     <button onclick="switchUtilityTab('decfrac')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔄 Dec↔Frac</button>
                     <button onclick="switchUtilityTab('matrix3')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Matrix 3×3</button>
                     <button onclick="switchUtilityTab('complex')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Complex</button>
+                    <button onclick="switchUtilityTab('binomial')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📐 Binomial</button>
+                    <button onclick="switchUtilityTab('coordinate')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📍 Coordinate</button>
+                    <button onclick="switchUtilityTab('baseconv')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Base Conv</button>
+                    <button onclick="switchUtilityTab('factorize')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Factorize</button>
                     <button onclick="switchUtilityTab('unit')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Unit Converter</button>
                     <button onclick="switchUtilityTab('percentage')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Percentage</button>
                     <button onclick="switchUtilityTab('age')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Age Calculator</button>
@@ -605,6 +609,82 @@
                         <div id="complexInputs"></div>
                         <button onclick="calculateComplex()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
                         <div id="complexResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Binomial Theorem Calculator -->
+                <div id="binomialTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📐 Binomial Theorem Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="binomialOperation" class="input-field w-full">
+                            <option value="expand">Expand (a+b)ⁿ</option>
+                            <option value="term">Find Specific Term</option>
+                            <option value="coefficient">Binomial Coefficient nCr</option>
+                        </select>
+                        <div id="binomialInputs">
+                            <input type="number" id="binomA" placeholder="Value of a" class="input-field w-full">
+                            <input type="number" id="binomB" placeholder="Value of b" class="input-field w-full">
+                            <input type="number" id="binomN" placeholder="Power n" class="input-field w-full">
+                        </div>
+                        <button onclick="calculateBinomial()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="binomialResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Coordinate Geometry Calculator -->
+                <div id="coordinateTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📍 Coordinate Geometry Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="coordOperation" onchange="updateCoordInputs()" class="input-field w-full">
+                            <option value="distance">Distance Between Points</option>
+                            <option value="midpoint">Midpoint</option>
+                            <option value="slope">Slope of Line</option>
+                            <option value="section">Section Formula</option>
+                            <option value="area">Area of Triangle</option>
+                        </select>
+                        <div id="coordInputs"></div>
+                        <button onclick="calculateCoordinate()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="coordinateResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Number Base Converter -->
+                <div id="baseconvTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 Number Base Converter</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="baseInput" placeholder="Enter number" class="input-field w-full">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="fromBase" class="input-field">
+                                <option value="10">Decimal (Base 10)</option>
+                                <option value="2">Binary (Base 2)</option>
+                                <option value="8">Octal (Base 8)</option>
+                                <option value="16">Hexadecimal (Base 16)</option>
+                            </select>
+                            <select id="toBase" class="input-field">
+                                <option value="2">Binary (Base 2)</option>
+                                <option value="8">Octal (Base 8)</option>
+                                <option value="10">Decimal (Base 10)</option>
+                                <option value="16">Hexadecimal (Base 16)</option>
+                            </select>
+                        </div>
+                        <button onclick="convertBase()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Convert</button>
+                        <div id="baseResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Factorization Calculator -->
+                <div id="factorizeTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🔢 Factorization Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="factorType" onchange="updateFactorInputs()" class="input-field w-full">
+                            <option value="quadratic">Quadratic (ax² + bx + c)</option>
+                            <option value="difference">Difference of Squares (a² - b²)</option>
+                            <option value="perfect">Perfect Square (a² ± 2ab + b²)</option>
+                            <option value="cubic">Sum/Difference of Cubes</option>
+                        </select>
+                        <div id="factorInputs"></div>
+                        <button onclick="factorizeExpression()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Factorize</button>
+                        <div id="factorResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                     </div>
                 </div>
 

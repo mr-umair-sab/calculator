@@ -2491,3 +2491,583 @@ function complexToPolar(a, b, resultDiv) {
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">r = |z|, θ = arg(z) = tan⁻¹(b/a)</p>
     `;
 }
+// ===== PHASE 2 - IMPORTANT FEATURES =====
+
+// 1. BINOMIAL THEOREM CALCULATOR
+function calculateBinomial() {
+    const operation = document.getElementById('binomialOperation').value;
+    const resultDiv = document.getElementById('binomialResult');
+    
+    if (operation === 'expand') {
+        expandBinomial(resultDiv);
+    } else if (operation === 'term') {
+        findBinomialTerm(resultDiv);
+    } else if (operation === 'coefficient') {
+        calculateBinomialCoefficient(resultDiv);
+    }
+}
+
+function expandBinomial(resultDiv) {
+    const a = parseFloat(document.getElementById('binomA').value);
+    const b = parseFloat(document.getElementById('binomB').value);
+    const n = parseInt(document.getElementById('binomN').value);
+    
+    if (isNaN(a) || isNaN(b) || isNaN(n) || n < 0 || n > 20) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid values (n should be 0-20)!</p>';
+        return;
+    }
+    
+    let expansion = '';
+    let terms = [];
+    
+    for (let r = 0; r <= n; r++) {
+        const coeff = binomialCoefficient(n, r);
+        const apower = n - r;
+        const bpower = r;
+        const termValue = coeff * Math.pow(a, apower) * Math.pow(b, bpower);
+        
+        let termStr = '';
+        if (r === 0) {
+            termStr = `${coeff}a^${apower}`;
+        } else if (r === n) {
+            termStr = `${coeff}b^${bpower}`;
+        } else {
+            termStr = `${coeff}a^${apower}b^${bpower}`;
+        }
+        
+        terms.push({ str: termStr, value: termValue });
+        
+        if (r > 0) expansion += ' + ';
+        expansion += termStr;
+    }
+    
+    const numericResult = terms.reduce((sum, term) => sum + term.value, 0);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Binomial Expansion:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">(${a} + ${b})^${n}</p>
+        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mb-3">
+            <p class="text-sm font-mono text-gray-800 dark:text-white">${expansion}</p>
+        </div>
+        <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">= ${numericResult.toFixed(6)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Using binomial theorem: (a+b)ⁿ = Σ(nCr × aⁿ⁻ʳ × bʳ)</p>
+    `;
+}
+
+function findBinomialTerm(resultDiv) {
+    const a = parseFloat(document.getElementById('binomA').value);
+    const b = parseFloat(document.getElementById('binomB').value);
+    const n = parseInt(document.getElementById('binomN').value);
+    
+    resultDiv.innerHTML = '<p class="text-orange-500">Please use expand mode to see all terms!</p>';
+}
+
+function calculateBinomialCoefficient(resultDiv) {
+    const n = parseInt(document.getElementById('binomN').value);
+    const r = parseInt(document.getElementById('binomA').value);
+    
+    if (isNaN(n) || isNaN(r) || n < 0 || r < 0 || r > n) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid values (0 ≤ r ≤ n)!</p>';
+        return;
+    }
+    
+    const result = binomialCoefficient(n, r);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Binomial Coefficient:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">ⁿCᵣ where n=${n}, r=${r}</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${result}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: nCr = n! / (r! × (n-r)!)</p>
+    `;
+}
+
+function binomialCoefficient(n, r) {
+    if (r > n) return 0;
+    if (r === 0 || r === n) return 1;
+    
+    let result = 1;
+    for (let i = 0; i < r; i++) {
+        result *= (n - i);
+        result /= (i + 1);
+    }
+    return Math.round(result);
+}
+
+// 2. COORDINATE GEOMETRY CALCULATOR
+function updateCoordInputs() {
+    const operation = document.getElementById('coordOperation')?.value;
+    const container = document.getElementById('coordInputs');
+    
+    if (!container) return;
+    
+    let html = '';
+    
+    if (operation === 'distance' || operation === 'midpoint' || operation === 'slope') {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg mb-3">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Point 1 (x₁, y₁):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="x1" placeholder="x₁" class="input-field">
+                    <input type="number" step="any" id="y1" placeholder="y₁" class="input-field">
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Point 2 (x₂, y₂):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="x2" placeholder="x₂" class="input-field">
+                    <input type="number" step="any" id="y2" placeholder="y₂" class="input-field">
+                </div>
+            </div>
+        `;
+    } else if (operation === 'section') {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg mb-3">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Point A (x₁, y₁):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="x1" placeholder="x₁" class="input-field">
+                    <input type="number" step="any" id="y1" placeholder="y₁" class="input-field">
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg mb-3">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Point B (x₂, y₂):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="any" id="x2" placeholder="x₂" class="input-field">
+                    <input type="number" step="any" id="y2" placeholder="y₂" class="input-field">
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Ratio (m:n):</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="m" placeholder="m" class="input-field">
+                    <input type="number" id="n" placeholder="n" class="input-field">
+                </div>
+            </div>
+        `;
+    } else if (operation === 'area') {
+        html = `
+            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <p class="font-semibold mb-2 text-gray-800 dark:text-white">Triangle Vertices:</p>
+                <div class="space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" step="any" id="x1" placeholder="x₁" class="input-field">
+                        <input type="number" step="any" id="y1" placeholder="y₁" class="input-field">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" step="any" id="x2" placeholder="x₂" class="input-field">
+                        <input type="number" step="any" id="y2" placeholder="y₂" class="input-field">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" step="any" id="x3" placeholder="x₃" class="input-field">
+                        <input type="number" step="any" id="y3" placeholder="y₃" class="input-field">
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function calculateCoordinate() {
+    const operation = document.getElementById('coordOperation').value;
+    const resultDiv = document.getElementById('coordinateResult');
+    
+    switch(operation) {
+        case 'distance':
+            calculateDistance(resultDiv);
+            break;
+        case 'midpoint':
+            calculateMidpoint(resultDiv);
+            break;
+        case 'slope':
+            calculateSlope(resultDiv);
+            break;
+        case 'section':
+            calculateSectionFormula(resultDiv);
+            break;
+        case 'area':
+            calculateTriangleArea(resultDiv);
+            break;
+    }
+}
+
+function calculateDistance(resultDiv) {
+    const x1 = parseFloat(document.getElementById('x1').value);
+    const y1 = parseFloat(document.getElementById('y1').value);
+    const x2 = parseFloat(document.getElementById('x2').value);
+    const y2 = parseFloat(document.getElementById('y2').value);
+    
+    if ([x1, y1, x2, y2].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter all coordinates!</p>';
+        return;
+    }
+    
+    const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Distance Between Points:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Point 1: (${x1}, ${y1})</p>
+        <p class="text-lg mb-3 text-gray-700 dark:text-gray-300">Point 2: (${x2}, ${y2})</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${distance.toFixed(6)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: d = √[(x₂-x₁)² + (y₂-y₁)²]</p>
+    `;
+}
+
+function calculateMidpoint(resultDiv) {
+    const x1 = parseFloat(document.getElementById('x1').value);
+    const y1 = parseFloat(document.getElementById('y1').value);
+    const x2 = parseFloat(document.getElementById('x2').value);
+    const y2 = parseFloat(document.getElementById('y2').value);
+    
+    if ([x1, y1, x2, y2].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter all coordinates!</p>';
+        return;
+    }
+    
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Midpoint:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Point 1: (${x1}, ${y1})</p>
+        <p class="text-lg mb-3 text-gray-700 dark:text-gray-300">Point 2: (${x2}, ${y2})</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">(${midX.toFixed(4)}, ${midY.toFixed(4)})</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: M = ((x₁+x₂)/2, (y₁+y₂)/2)</p>
+    `;
+}
+
+function calculateSlope(resultDiv) {
+    const x1 = parseFloat(document.getElementById('x1').value);
+    const y1 = parseFloat(document.getElementById('y1').value);
+    const x2 = parseFloat(document.getElementById('x2').value);
+    const y2 = parseFloat(document.getElementById('y2').value);
+    
+    if ([x1, y1, x2, y2].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter all coordinates!</p>';
+        return;
+    }
+    
+    if (x2 === x1) {
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Slope:</h4>
+            <p class="text-2xl font-bold text-orange-600 dark:text-orange-400">Undefined (Vertical Line)</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">The line is parallel to y-axis</p>
+        `;
+        return;
+    }
+    
+    const slope = (y2 - y1) / (x2 - x1);
+    const angle = Math.atan(slope) * 180 / Math.PI;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Slope of Line:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Point 1: (${x1}, ${y1})</p>
+        <p class="text-lg mb-3 text-gray-700 dark:text-gray-300">Point 2: (${x2}, ${y2})</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">m = ${slope.toFixed(6)}</p>
+        <p class="text-xl text-green-600 dark:text-green-400 mt-2">Angle: ${angle.toFixed(2)}°</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: m = (y₂-y₁)/(x₂-x₁)</p>
+    `;
+}
+
+function calculateSectionFormula(resultDiv) {
+    const x1 = parseFloat(document.getElementById('x1').value);
+    const y1 = parseFloat(document.getElementById('y1').value);
+    const x2 = parseFloat(document.getElementById('x2').value);
+    const y2 = parseFloat(document.getElementById('y2').value);
+    const m = parseFloat(document.getElementById('m').value);
+    const n = parseFloat(document.getElementById('n').value);
+    
+    if ([x1, y1, x2, y2, m, n].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter all values!</p>';
+        return;
+    }
+    
+    const x = (m * x2 + n * x1) / (m + n);
+    const y = (m * y2 + n * y1) / (m + n);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Section Formula:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Point A: (${x1}, ${y1})</p>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Point B: (${x2}, ${y2})</p>
+        <p class="text-lg mb-3 text-gray-700 dark:text-gray-300">Ratio m:n = ${m}:${n}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">P = (${x.toFixed(4)}, ${y.toFixed(4)})</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: P = ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n))</p>
+    `;
+}
+
+function calculateTriangleArea(resultDiv) {
+    const x1 = parseFloat(document.getElementById('x1').value);
+    const y1 = parseFloat(document.getElementById('y1').value);
+    const x2 = parseFloat(document.getElementById('x2').value);
+    const y2 = parseFloat(document.getElementById('y2').value);
+    const x3 = parseFloat(document.getElementById('x3').value);
+    const y3 = parseFloat(document.getElementById('y3').value);
+    
+    if ([x1, y1, x2, y2, x3, y3].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter all coordinates!</p>';
+        return;
+    }
+    
+    const area = Math.abs((x1*(y2-y3) + x2*(y3-y1) + x3*(y1-y2)) / 2);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Area of Triangle:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Vertex 1: (${x1}, ${y1})</p>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">Vertex 2: (${x2}, ${y2})</p>
+        <p class="text-lg mb-3 text-gray-700 dark:text-gray-300">Vertex 3: (${x3}, ${y3})</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${area.toFixed(6)} sq units</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: Area = ½|x₁(y₂-y₃) + x₂(y₃-y₁) + x₃(y₁-y₂)|</p>
+    `;
+}
+
+// Initialize coordinate inputs
+window.addEventListener('load', () => {
+    updateCoordInputs();
+    updateFactorInputs();
+});
+
+// 3. NUMBER BASE CONVERTER
+function convertBase() {
+    const input = document.getElementById('baseInput').value.trim();
+    const fromBase = parseInt(document.getElementById('fromBase').value);
+    const toBase = parseInt(document.getElementById('toBase').value);
+    const resultDiv = document.getElementById('baseResult');
+    
+    if (!input) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter a number!</p>';
+        return;
+    }
+    
+    try {
+        // Convert to decimal first
+        let decimal;
+        if (fromBase === 10) {
+            decimal = parseInt(input);
+        } else {
+            decimal = parseInt(input, fromBase);
+        }
+        
+        if (isNaN(decimal)) {
+            resultDiv.innerHTML = '<p class="text-red-500">Invalid number for selected base!</p>';
+            return;
+        }
+        
+        // Convert from decimal to target base
+        let result;
+        if (toBase === 10) {
+            result = decimal.toString();
+        } else {
+            result = decimal.toString(toBase).toUpperCase();
+        }
+        
+        const baseName = {
+            2: 'Binary',
+            8: 'Octal',
+            10: 'Decimal',
+            16: 'Hexadecimal'
+        };
+        
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Base Conversion:</h4>
+            <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${baseName[fromBase]}: ${input}</p>
+            <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">${baseName[toBase]}: ${result}</p>
+            <div class="mt-4 bg-gray-100 dark:bg-gray-800 p-3 rounded">
+                <p class="text-sm font-semibold mb-2 text-gray-800 dark:text-white">All Conversions:</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Binary: ${decimal.toString(2)}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Octal: ${decimal.toString(8)}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Decimal: ${decimal}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Hexadecimal: ${decimal.toString(16).toUpperCase()}</p>
+            </div>
+        `;
+    } catch (error) {
+        resultDiv.innerHTML = '<p class="text-red-500">Error in conversion. Please check your input!</p>';
+    }
+}
+
+// 4. FACTORIZATION CALCULATOR
+function updateFactorInputs() {
+    const type = document.getElementById('factorType')?.value;
+    const container = document.getElementById('factorInputs');
+    
+    if (!container) return;
+    
+    let html = '';
+    
+    if (type === 'quadratic') {
+        html = `
+            <p class="text-gray-700 dark:text-gray-300 mb-2">ax² + bx + c</p>
+            <input type="number" id="factorA" placeholder="Coefficient a" class="input-field w-full">
+            <input type="number" id="factorB" placeholder="Coefficient b" class="input-field w-full">
+            <input type="number" id="factorC" placeholder="Coefficient c" class="input-field w-full">
+        `;
+    } else if (type === 'difference') {
+        html = `
+            <p class="text-gray-700 dark:text-gray-300 mb-2">a² - b²</p>
+            <input type="number" id="factorA" placeholder="Value of a" class="input-field w-full">
+            <input type="number" id="factorB" placeholder="Value of b" class="input-field w-full">
+        `;
+    } else if (type === 'perfect') {
+        html = `
+            <p class="text-gray-700 dark:text-gray-300 mb-2">a² ± 2ab + b²</p>
+            <input type="number" id="factorA" placeholder="Value of a" class="input-field w-full">
+            <input type="number" id="factorB" placeholder="Value of b" class="input-field w-full">
+            <select id="factorSign" class="input-field w-full">
+                <option value="+">+ (Plus)</option>
+                <option value="-">− (Minus)</option>
+            </select>
+        `;
+    } else if (type === 'cubic') {
+        html = `
+            <p class="text-gray-700 dark:text-gray-300 mb-2">a³ ± b³</p>
+            <input type="number" id="factorA" placeholder="Value of a" class="input-field w-full">
+            <input type="number" id="factorB" placeholder="Value of b" class="input-field w-full">
+            <select id="factorSign" class="input-field w-full">
+                <option value="+">+ (Sum of Cubes)</option>
+                <option value="-">− (Difference of Cubes)</option>
+            </select>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function factorizeExpression() {
+    const type = document.getElementById('factorType').value;
+    const resultDiv = document.getElementById('factorResult');
+    
+    switch(type) {
+        case 'quadratic':
+            factorizeQuadratic(resultDiv);
+            break;
+        case 'difference':
+            factorizeDifferenceOfSquares(resultDiv);
+            break;
+        case 'perfect':
+            factorizePerfectSquare(resultDiv);
+            break;
+        case 'cubic':
+            factorizeCubic(resultDiv);
+            break;
+    }
+}
+
+function factorizeQuadratic(resultDiv) {
+    const a = parseFloat(document.getElementById('factorA').value);
+    const b = parseFloat(document.getElementById('factorB').value);
+    const c = parseFloat(document.getElementById('factorC').value);
+    
+    if ([a, b, c].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter all coefficients!</p>';
+        return;
+    }
+    
+    if (a === 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Coefficient a cannot be zero!</p>';
+        return;
+    }
+    
+    const discriminant = b * b - 4 * a * c;
+    
+    if (discriminant < 0) {
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Factorization:</h4>
+            <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${a}x² + ${b}x + ${c}</p>
+            <p class="text-orange-600 dark:text-orange-400 font-semibold">Cannot be factored over real numbers</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Discriminant = ${discriminant} < 0</p>
+        `;
+        return;
+    }
+    
+    const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+    const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+    
+    let factored;
+    if (a === 1) {
+        factored = `(x ${root1 >= 0 ? '-' : '+'} ${Math.abs(root1).toFixed(2)})(x ${root2 >= 0 ? '-' : '+'} ${Math.abs(root2).toFixed(2)})`;
+    } else {
+        factored = `${a}(x ${root1 >= 0 ? '-' : '+'} ${Math.abs(root1).toFixed(2)})(x ${root2 >= 0 ? '-' : '+'} ${Math.abs(root2).toFixed(2)})`;
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Factorization:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">Original: ${a}x² + ${b}x + ${c}</p>
+        <p class="text-2xl font-bold text-pink-600 dark:text-pink-400 mb-3">${factored}</p>
+        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded">
+            <p class="text-sm font-semibold mb-1 text-gray-800 dark:text-white">Roots:</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">x₁ = ${root1.toFixed(4)}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">x₂ = ${root2.toFixed(4)}</p>
+        </div>
+    `;
+}
+
+function factorizeDifferenceOfSquares(resultDiv) {
+    const a = parseFloat(document.getElementById('factorA').value);
+    const b = parseFloat(document.getElementById('factorB').value);
+    
+    if ([a, b].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter both values!</p>';
+        return;
+    }
+    
+    const result = a * a - b * b;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Difference of Squares:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${a}² - ${b}² = ${result}</p>
+        <p class="text-2xl font-bold text-pink-600 dark:text-pink-400 mb-3">= (${a} + ${b})(${a} - ${b})</p>
+        <p class="text-xl text-green-600 dark:text-green-400">= ${a + b} × ${a - b}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: a² - b² = (a + b)(a - b)</p>
+    `;
+}
+
+function factorizePerfectSquare(resultDiv) {
+    const a = parseFloat(document.getElementById('factorA').value);
+    const b = parseFloat(document.getElementById('factorB').value);
+    const sign = document.getElementById('factorSign').value;
+    
+    if ([a, b].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter both values!</p>';
+        return;
+    }
+    
+    const result = a * a + (sign === '+' ? 2 : -2) * a * b + b * b;
+    const factored = sign === '+' ? `(${a} + ${b})²` : `(${a} - ${b})²`;
+    const expanded = sign === '+' ? `${a}² + 2(${a})(${b}) + ${b}²` : `${a}² - 2(${a})(${b}) + ${b}²`;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Perfect Square:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${expanded} = ${result}</p>
+        <p class="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-3">${factored}</p>
+        <p class="text-xl text-green-600 dark:text-green-400">= ${sign === '+' ? (a + b) * (a + b) : (a - b) * (a - b)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: a² ${sign} 2ab + b² = (a ${sign} b)²</p>
+    `;
+}
+
+function factorizeCubic(resultDiv) {
+    const a = parseFloat(document.getElementById('factorA').value);
+    const b = parseFloat(document.getElementById('factorB').value);
+    const sign = document.getElementById('factorSign').value;
+    
+    if ([a, b].some(isNaN)) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter both values!</p>';
+        return;
+    }
+    
+    const result = sign === '+' ? a * a * a + b * b * b : a * a * a - b * b * b;
+    
+    let factored, formula;
+    if (sign === '+') {
+        factored = `(${a} + ${b})(${a}² - ${a * b} + ${b}²)`;
+        formula = 'a³ + b³ = (a + b)(a² - ab + b²)';
+    } else {
+        factored = `(${a} - ${b})(${a}² + ${a * b} + ${b}²)`;
+        formula = 'a³ - b³ = (a - b)(a² + ab + b²)';
+    }
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">${sign === '+' ? 'Sum' : 'Difference'} of Cubes:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${a}³ ${sign} ${b}³ = ${result}</p>
+        <p class="text-2xl font-bold text-pink-600 dark:text-pink-400 mb-3">${factored}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: ${formula}</p>
+    `;
+}
