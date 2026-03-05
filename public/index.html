@@ -437,6 +437,10 @@
                     <button onclick="switchUtilityTab('coordinate')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📍 Coordinate</button>
                     <button onclick="switchUtilityTab('baseconv')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Base Conv</button>
                     <button onclick="switchUtilityTab('factorize')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🔢 Factorize</button>
+                    <button onclick="switchUtilityTab('calculus')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📈 Calculus</button>
+                    <button onclick="switchUtilityTab('statistics')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">📊 Statistics</button>
+                    <button onclick="switchUtilityTab('probability')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">🎲 Probability</button>
+                    <button onclick="switchUtilityTab('ratio')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">⚖️ Ratio</button>
                     <button onclick="switchUtilityTab('unit')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Unit Converter</button>
                     <button onclick="switchUtilityTab('percentage')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Percentage</button>
                     <button onclick="switchUtilityTab('age')" class="adv-tab bg-pink-500 text-white px-6 py-2 rounded-lg">Age Calculator</button>
@@ -685,6 +689,73 @@
                         <div id="factorInputs"></div>
                         <button onclick="factorizeExpression()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Factorize</button>
                         <div id="factorResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Calculus Calculator -->
+                <div id="calculusTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📈 Basic Calculus Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="calculusType" class="input-field w-full">
+                            <option value="power">Power Rule: xⁿ</option>
+                            <option value="trig">Trigonometric Functions</option>
+                            <option value="exp">Exponential: eˣ</option>
+                            <option value="log">Logarithmic: ln(x)</option>
+                        </select>
+                        <select id="calculusOperation" class="input-field w-full">
+                            <option value="differentiate">Differentiation (d/dx)</option>
+                            <option value="integrate">Integration (∫dx)</option>
+                        </select>
+                        <div id="calculusInputs">
+                            <input type="number" id="calculusCoeff" placeholder="Coefficient (e.g., 3 for 3x²)" class="input-field w-full">
+                            <input type="number" id="calculusPower" placeholder="Power n (for xⁿ)" class="input-field w-full">
+                        </div>
+                        <button onclick="calculateCalculus()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="calculusResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Statistics Calculator -->
+                <div id="statisticsTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">📊 Statistics Calculator</h3>
+                    <div class="space-y-4">
+                        <textarea id="statsData" placeholder="Enter numbers separated by commas (e.g., 5, 10, 15, 20, 25)" class="input-field w-full" rows="3"></textarea>
+                        <button onclick="calculateStatistics()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate Statistics</button>
+                        <div id="statisticsResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Probability Calculator -->
+                <div id="probabilityTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">🎲 Probability Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="probType" onchange="updateProbInputs()" class="input-field w-full">
+                            <option value="single">Single Event P(A)</option>
+                            <option value="union">Union P(A∪B)</option>
+                            <option value="intersection">Intersection P(A∩B)</option>
+                            <option value="conditional">Conditional P(A|B)</option>
+                            <option value="permutation">Permutation (nPr)</option>
+                            <option value="combination">Combination (nCr)</option>
+                        </select>
+                        <div id="probInputs"></div>
+                        <button onclick="calculateProbability()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="probabilityResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
+                    </div>
+                </div>
+
+                <!-- Ratio & Proportion Calculator -->
+                <div id="ratioTab" class="utility-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">⚖️ Ratio & Proportion Calculator</h3>
+                    <div class="space-y-4">
+                        <select id="ratioType" onchange="updateRatioInputs()" class="input-field w-full">
+                            <option value="simplify">Simplify Ratio</option>
+                            <option value="proportion">Solve Proportion (a:b = c:d)</option>
+                            <option value="divide">Divide Amount in Ratio</option>
+                            <option value="percent">Ratio to Percentage</option>
+                        </select>
+                        <div id="ratioInputs"></div>
+                        <button onclick="calculateRatio()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">Calculate</button>
+                        <div id="ratioResult" class="mt-4 p-4 bg-white dark:bg-gray-700 rounded-lg text-gray-800 dark:text-white shadow-inner"></div>
                     </div>
                 </div>
 
