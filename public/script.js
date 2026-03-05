@@ -3071,3 +3071,435 @@ function factorizeCubic(resultDiv) {
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: ${formula}</p>
     `;
 }
+// ===== PHASE 3 - CALCULUS CALCULATOR =====
+
+// Basic Calculus Calculator
+function calculateCalculus() {
+    const operation = document.getElementById('calculusOperation').value;
+    const resultDiv = document.getElementById('calculusResult');
+    
+    if (operation === 'differentiate') {
+        differentiate(resultDiv);
+    } else if (operation === 'integrate') {
+        integrate(resultDiv);
+    }
+}
+
+// Differentiation Calculator
+function differentiate(resultDiv) {
+    const expression = document.getElementById('calculusInput').value.trim().toLowerCase();
+    
+    if (!expression) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter an expression!</p>';
+        return;
+    }
+    
+    try {
+        const result = differentiateExpression(expression);
+        
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Differentiation:</h4>
+            <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">f(x) = ${expression}</p>
+            <p class="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-3">f'(x) = ${result.derivative}</p>
+            ${result.steps ? `
+                <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-3">
+                    <p class="font-semibold mb-2 text-gray-800 dark:text-white">Steps:</p>
+                    ${result.steps.map(step => `<p class="text-sm text-gray-700 dark:text-gray-300">• ${step}</p>`).join('')}
+                </div>
+            ` : ''}
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Note: Basic differentiation rules applied</p>
+        `;
+    } catch (error) {
+        resultDiv.innerHTML = `<p class="text-orange-500">Could not differentiate. Try simpler expressions like: x^2, x^3+2x, sin(x), cos(x), e^x, ln(x)</p>`;
+    }
+}
+
+// Integration Calculator
+function integrate(resultDiv) {
+    const expression = document.getElementById('calculusInput').value.trim().toLowerCase();
+    
+    if (!expression) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter an expression!</p>';
+        return;
+    }
+    
+    try {
+        const result = integrateExpression(expression);
+        
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Integration:</h4>
+            <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">f(x) = ${expression}</p>
+            <p class="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-3">∫f(x)dx = ${result.integral}</p>
+            ${result.steps ? `
+                <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-3">
+                    <p class="font-semibold mb-2 text-gray-800 dark:text-white">Steps:</p>
+                    ${result.steps.map(step => `<p class="text-sm text-gray-700 dark:text-gray-300">• ${step}</p>`).join('')}
+                </div>
+            ` : ''}
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Note: Don't forget to add constant C for indefinite integrals</p>
+        `;
+    } catch (error) {
+        resultDiv.innerHTML = `<p class="text-orange-500">Could not integrate. Try simpler expressions like: x^2, x^3, sin(x), cos(x), e^x, 1/x</p>`;
+    }
+}
+
+// Differentiation Engine (Pattern Matching)
+function differentiateExpression(expr) {
+    const steps = [];
+    let derivative = '';
+    
+    // Remove spaces
+    expr = expr.replace(/\s/g, '');
+    
+    // Pattern: x^n
+    if (/^x\^(\d+)$/.test(expr)) {
+        const match = expr.match(/^x\^(\d+)$/);
+        const n = parseInt(match[1]);
+        if (n === 0) {
+            derivative = '0';
+            steps.push('Derivative of constant is 0');
+        } else if (n === 1) {
+            derivative = '1';
+            steps.push('d/dx(x) = 1');
+        } else {
+            derivative = `${n}x^${n-1}`;
+            steps.push(`Using power rule: d/dx(x^${n}) = ${n}x^${n-1}`);
+        }
+    }
+    // Pattern: nx^m
+    else if (/^(\d+)x\^(\d+)$/.test(expr)) {
+        const match = expr.match(/^(\d+)x\^(\d+)$/);
+        const coeff = parseInt(match[1]);
+        const power = parseInt(match[2]);
+        const newCoeff = coeff * power;
+        const newPower = power - 1;
+        if (newPower === 0) {
+            derivative = `${newCoeff}`;
+        } else if (newPower === 1) {
+            derivative = `${newCoeff}x`;
+        } else {
+            derivative = `${newCoeff}x^${newPower}`;
+        }
+        steps.push(`Using power rule: d/dx(${coeff}x^${power}) = ${newCoeff}x^${newPower}`);
+    }
+    // Pattern: x
+    else if (expr === 'x') {
+        derivative = '1';
+        steps.push('d/dx(x) = 1');
+    }
+    // Pattern: nx
+    else if (/^(\d+)x$/.test(expr)) {
+        const match = expr.match(/^(\d+)x$/);
+        derivative = match[1];
+        steps.push(`d/dx(${match[1]}x) = ${match[1]}`);
+    }
+    // Pattern: constant
+    else if (/^\d+$/.test(expr)) {
+        derivative = '0';
+        steps.push('Derivative of constant is 0');
+    }
+    // Trigonometric functions
+    else if (expr === 'sin(x)' || expr === 'sinx') {
+        derivative = 'cos(x)';
+        steps.push('d/dx(sin x) = cos x');
+    }
+    else if (expr === 'cos(x)' || expr === 'cosx') {
+        derivative = '-sin(x)';
+        steps.push('d/dx(cos x) = -sin x');
+    }
+    else if (expr === 'tan(x)' || expr === 'tanx') {
+        derivative = 'sec²(x)';
+        steps.push('d/dx(tan x) = sec² x');
+    }
+    // Exponential and logarithmic
+    else if (expr === 'e^x' || expr === 'exp(x)') {
+        derivative = 'e^x';
+        steps.push('d/dx(e^x) = e^x');
+    }
+    else if (expr === 'ln(x)' || expr === 'lnx' || expr === 'log(x)') {
+        derivative = '1/x';
+        steps.push('d/dx(ln x) = 1/x');
+    }
+    // Simple sum: x^n + x^m
+    else if (/^x\^(\d+)\+x\^(\d+)$/.test(expr)) {
+        const match = expr.match(/^x\^(\d+)\+x\^(\d+)$/);
+        const n1 = parseInt(match[1]);
+        const n2 = parseInt(match[2]);
+        derivative = `${n1}x^${n1-1} + ${n2}x^${n2-1}`;
+        steps.push('Differentiate each term separately');
+        steps.push(`d/dx(x^${n1}) = ${n1}x^${n1-1}`);
+        steps.push(`d/dx(x^${n2}) = ${n2}x^${n2-1}`);
+    }
+    // Simple sum: x^n + nx
+    else if (/^x\^(\d+)\+(\d+)x$/.test(expr)) {
+        const match = expr.match(/^x\^(\d+)\+(\d+)x$/);
+        const n = parseInt(match[1]);
+        const coeff = match[2];
+        derivative = `${n}x^${n-1} + ${coeff}`;
+        steps.push('Differentiate each term separately');
+        steps.push(`d/dx(x^${n}) = ${n}x^${n-1}`);
+        steps.push(`d/dx(${coeff}x) = ${coeff}`);
+    }
+    else {
+        throw new Error('Expression not supported');
+    }
+    
+    return { derivative, steps };
+}
+
+// Integration Engine (Pattern Matching)
+function integrateExpression(expr) {
+    const steps = [];
+    let integral = '';
+    
+    // Remove spaces
+    expr = expr.replace(/\s/g, '');
+    
+    // Pattern: x^n
+    if (/^x\^(\d+)$/.test(expr)) {
+        const match = expr.match(/^x\^(\d+)$/);
+        const n = parseInt(match[1]);
+        const newPower = n + 1;
+        integral = `x^${newPower}/${newPower} + C`;
+        steps.push(`Using power rule: ∫x^${n}dx = x^${newPower}/${newPower} + C`);
+    }
+    // Pattern: nx^m
+    else if (/^(\d+)x\^(\d+)$/.test(expr)) {
+        const match = expr.match(/^(\d+)x\^(\d+)$/);
+        const coeff = parseInt(match[1]);
+        const power = parseInt(match[2]);
+        const newPower = power + 1;
+        integral = `${coeff}x^${newPower}/${newPower} + C`;
+        steps.push(`Using power rule: ∫${coeff}x^${power}dx = ${coeff}x^${newPower}/${newPower} + C`);
+    }
+    // Pattern: x
+    else if (expr === 'x') {
+        integral = 'x²/2 + C';
+        steps.push('∫x dx = x²/2 + C');
+    }
+    // Pattern: nx
+    else if (/^(\d+)x$/.test(expr)) {
+        const match = expr.match(/^(\d+)x$/);
+        const coeff = match[1];
+        integral = `${coeff}x²/2 + C`;
+        steps.push(`∫${coeff}x dx = ${coeff}x²/2 + C`);
+    }
+    // Pattern: constant
+    else if (/^\d+$/.test(expr)) {
+        const n = expr;
+        integral = `${n}x + C`;
+        steps.push(`∫${n} dx = ${n}x + C`);
+    }
+    // Pattern: 1
+    else if (expr === '1') {
+        integral = 'x + C';
+        steps.push('∫1 dx = x + C');
+    }
+    // Trigonometric functions
+    else if (expr === 'sin(x)' || expr === 'sinx') {
+        integral = '-cos(x) + C';
+        steps.push('∫sin x dx = -cos x + C');
+    }
+    else if (expr === 'cos(x)' || expr === 'cosx') {
+        integral = 'sin(x) + C';
+        steps.push('∫cos x dx = sin x + C');
+    }
+    else if (expr === 'sec^2(x)' || expr === 'sec²(x)') {
+        integral = 'tan(x) + C';
+        steps.push('∫sec² x dx = tan x + C');
+    }
+    // Exponential and logarithmic
+    else if (expr === 'e^x' || expr === 'exp(x)') {
+        integral = 'e^x + C';
+        steps.push('∫e^x dx = e^x + C');
+    }
+    else if (expr === '1/x') {
+        integral = 'ln|x| + C';
+        steps.push('∫(1/x) dx = ln|x| + C');
+    }
+    // Simple sum: x^n + x^m
+    else if (/^x\^(\d+)\+x\^(\d+)$/.test(expr)) {
+        const match = expr.match(/^x\^(\d+)\+x\^(\d+)$/);
+        const n1 = parseInt(match[1]);
+        const n2 = parseInt(match[2]);
+        integral = `x^${n1+1}/${n1+1} + x^${n2+1}/${n2+1} + C`;
+        steps.push('Integrate each term separately');
+        steps.push(`∫x^${n1}dx = x^${n1+1}/${n1+1}`);
+        steps.push(`∫x^${n2}dx = x^${n2+1}/${n2+1}`);
+    }
+    else {
+        throw new Error('Expression not supported');
+    }
+    
+    return { integral, steps };
+}
+
+// ===== STATISTICS CALCULATOR =====
+
+function calculateStatistics() {
+    const operation = document.getElementById('statsOperation').value;
+    const resultDiv = document.getElementById('statisticsResult');
+    
+    if (operation === 'regression') {
+        calculateRegression(resultDiv);
+    } else if (operation === 'correlation') {
+        calculateCorrelation(resultDiv);
+    }
+}
+
+function calculateRegression(resultDiv) {
+    const dataInput = document.getElementById('statsData').value.trim();
+    
+    if (!dataInput) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter data points!</p>';
+        return;
+    }
+    
+    try {
+        // Parse data: format "x1,y1; x2,y2; x3,y3"
+        const points = dataInput.split(';').map(pair => {
+            const [x, y] = pair.trim().split(',').map(Number);
+            return { x, y };
+        });
+        
+        if (points.length < 2) {
+            resultDiv.innerHTML = '<p class="text-red-500">Need at least 2 data points!</p>';
+            return;
+        }
+        
+        // Calculate linear regression
+        const n = points.length;
+        const sumX = points.reduce((sum, p) => sum + p.x, 0);
+        const sumY = points.reduce((sum, p) => sum + p.y, 0);
+        const sumXY = points.reduce((sum, p) => sum + p.x * p.y, 0);
+        const sumX2 = points.reduce((sum, p) => sum + p.x * p.x, 0);
+        const sumY2 = points.reduce((sum, p) => sum + p.y * p.y, 0);
+        
+        // Calculate slope (m) and intercept (c)
+        const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+        const c = (sumY - m * sumX) / n;
+        
+        // Calculate R²
+        const yMean = sumY / n;
+        const ssTotal = points.reduce((sum, p) => sum + Math.pow(p.y - yMean, 2), 0);
+        const ssResidual = points.reduce((sum, p) => {
+            const yPred = m * p.x + c;
+            return sum + Math.pow(p.y - yPred, 2);
+        }, 0);
+        const r2 = 1 - (ssResidual / ssTotal);
+        
+        // Calculate correlation coefficient
+        const r = Math.sqrt(r2) * (m >= 0 ? 1 : -1);
+        
+        resultDiv.innerHTML = `
+            <h4 class="font-bold text-lg mb-3">Linear Regression:</h4>
+            <p class="text-sm mb-2 text-gray-700 dark:text-gray-300">Data points: ${n}</p>
+            <p class="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-3">y = ${m.toFixed(4)}x + ${c.toFixed(4)}</p>
+            <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded space-y-1">
+                <p class="text-sm text-gray-700 dark:text-gray-300">Slope (m): ${m.toFixed(6)}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Intercept (c): ${c.toFixed(6)}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">R² (Coefficient of determination): ${r2.toFixed(6)}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">r (Correlation coefficient): ${r.toFixed(6)}</p>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">
+                ${r2 > 0.9 ? 'Excellent fit!' : r2 > 0.7 ? 'Good fit' : r2 > 0.5 ? 'Moderate fit' : 'Weak fit'}
+            </p>
+        `;
+    } catch (error) {
+        resultDiv.innerHTML = '<p class="text-red-500">Invalid data format! Use: x1,y1; x2,y2; x3,y3</p>';
+    }
+}
+
+// ===== PROBABILITY CALCULATOR =====
+
+function calculateProbability() {
+    const operation = document.getElementById('probOperation').value;
+    const resultDiv = document.getElementById('probabilityResult');
+    
+    if (operation === 'binomial') {
+        calculateBinomialProbability(resultDiv);
+    } else if (operation === 'union') {
+        calculateUnionProbability(resultDiv);
+    }
+}
+
+function calculateBinomialProbability(resultDiv) {
+    const n = parseInt(document.getElementById('probN').value);
+    const k = parseInt(document.getElementById('probK').value);
+    const p = parseFloat(document.getElementById('probP').value);
+    
+    if (isNaN(n) || isNaN(k) || isNaN(p) || p < 0 || p > 1) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid values! (0 ≤ p ≤ 1)</p>';
+        return;
+    }
+    
+    // Calculate binomial probability
+    const nCk = binomialCoefficient(n, k);
+    const probability = nCk * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Binomial Probability:</h4>
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">P(X = ${k}) where n=${n}, p=${p}</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400 mb-3">${probability.toFixed(6)}</p>
+        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded">
+            <p class="text-sm text-gray-700 dark:text-gray-300">Formula: P(X=k) = nCk × p^k × (1-p)^(n-k)</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">nCk = ${nCk}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Percentage: ${(probability * 100).toFixed(2)}%</p>
+        </div>
+    `;
+}
+
+// ===== RATIO & PROPORTION =====
+
+function calculateRatio() {
+    const operation = document.getElementById('ratioOperation').value;
+    const resultDiv = document.getElementById('ratioResult');
+    
+    if (operation === 'simplify') {
+        simplifyRatio(resultDiv);
+    } else if (operation === 'proportion') {
+        solveProportion(resultDiv);
+    }
+}
+
+function simplifyRatio(resultDiv) {
+    const a = parseInt(document.getElementById('ratioA').value);
+    const b = parseInt(document.getElementById('ratioB').value);
+    
+    if (isNaN(a) || isNaN(b) || b === 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid numbers!</p>';
+        return;
+    }
+    
+    const gcd = findGCD(Math.abs(a), Math.abs(b));
+    const simplifiedA = a / gcd;
+    const simplifiedB = b / gcd;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Simplified Ratio:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">Original: ${a}:${b}</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">${simplifiedA}:${simplifiedB}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">GCD = ${gcd}</p>
+    `;
+}
+
+function solveProportion(resultDiv) {
+    const a = parseFloat(document.getElementById('ratioA').value);
+    const b = parseFloat(document.getElementById('ratioB').value);
+    const c = parseFloat(document.getElementById('ratioC').value);
+    
+    if (isNaN(a) || isNaN(b) || isNaN(c) || b === 0) {
+        resultDiv.innerHTML = '<p class="text-red-500">Please enter valid numbers!</p>';
+        return;
+    }
+    
+    // Solve a:b = c:x for x
+    const x = (b * c) / a;
+    
+    resultDiv.innerHTML = `
+        <h4 class="font-bold text-lg mb-3">Proportion Solution:</h4>
+        <p class="text-xl mb-2 text-gray-700 dark:text-gray-300">${a}:${b} = ${c}:x</p>
+        <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">x = ${x.toFixed(4)}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">Formula: a/b = c/x → x = (b×c)/a</p>
+    `;
+}
