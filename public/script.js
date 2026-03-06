@@ -285,17 +285,20 @@ function copyShareLink() {
     
     navigator.clipboard.writeText(shareText).then(() => {
         // Show success message
-        const btn = event.target.closest('button');
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<span class="text-2xl">✓</span><span>Copied!</span>';
-        btn.className = 'w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2';
-        
-        setTimeout(() => {
-            btn.innerHTML = originalHTML;
-            btn.className = 'w-full bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2';
-        }, 2000);
-    }).catch(() => {
-        alert('Failed to copy link!');
+        const btn = document.querySelector('#shareMenu button[onclick="copyShareLink()"]');
+        if (btn) {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="text-2xl">✓</span><span>Copied!</span>';
+            btn.className = 'w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.className = 'w-full bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2';
+            }, 2000);
+        }
+    }).catch((err) => {
+        console.error('Copy failed:', err);
+        alert('Failed to copy link! Please try again.');
     });
 }
 
