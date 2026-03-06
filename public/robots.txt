@@ -1,0 +1,26 @@
+# Smart Calculator - Robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://smart-calculator-full.web.app/sitemap.xml
+
+# Crawl Delay
+Crawl-delay: 1
+
+# Disallow admin paths (if any in future)
+# Disallow: /admin/
+
+# Allow all calculators
+Allow: /index.html
+Allow: /dist/
+Allow: /*.js
+Allow: /*.css
+
+# Block specific bots (optional)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
